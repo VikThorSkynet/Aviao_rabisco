@@ -1,0 +1,20 @@
+{
+  "name": "rabisco-planador",
+  "version": "3.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "vite build && node scripts/portable.mjs",
+    "test": "node --test tests/*.test.js",
+    "docs:check": "node scripts/check-docs.mjs",
+    "memory:check": "node scripts/check-memory.mjs",
+    "release": "npm run build && node scripts/release.mjs"
+  },
+  "dependencies": {
+    "three": "0.160.0"
+  },
+  "devDependencies": {
+    "vite": "8.3.4"
+  }
+}

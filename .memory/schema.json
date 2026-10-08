@@ -1,0 +1,217 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Rabisco project memory v1",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "updatedAt",
+    "project",
+    "entrypoints",
+    "invariants",
+    "components",
+    "validation",
+    "knownLimitations",
+    "nextSteps",
+    "references"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "type": "integer",
+      "enum": [
+        1
+      ]
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date"
+    },
+    "project": {
+      "type": "object",
+      "required": [
+        "name",
+        "version",
+        "language",
+        "repository"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "language": {
+          "type": "string",
+          "minLength": 1
+        },
+        "repository": {
+          "type": "string",
+          "format": "uri"
+        }
+      }
+    },
+    "entrypoints": {
+      "type": "object",
+      "required": [
+        "source",
+        "portable",
+        "commands"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "type": "string",
+          "minLength": 1
+        },
+        "portable": {
+          "type": "string",
+          "minLength": 1
+        },
+        "commands": {
+          "type": "object",
+          "required": [
+            "install",
+            "dev",
+            "test",
+            "build",
+            "release",
+            "docs",
+            "memory"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "install": {
+              "type": "string",
+              "minLength": 1
+            },
+            "dev": {
+              "type": "string",
+              "minLength": 1
+            },
+            "test": {
+              "type": "string",
+              "minLength": 1
+            },
+            "build": {
+              "type": "string",
+              "minLength": 1
+            },
+            "release": {
+              "type": "string",
+              "minLength": 1
+            },
+            "docs": {
+              "type": "string",
+              "minLength": 1
+            },
+            "memory": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    },
+    "invariants": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1
+    },
+    "components": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "path",
+          "role"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "role": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "validation": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "date",
+          "kind",
+          "status",
+          "evidence"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "automated",
+              "build",
+              "documentation",
+              "memory",
+              "browser-emulated",
+              "hardware"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "passed",
+              "pending",
+              "failed"
+            ]
+          },
+          "evidence": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "knownLimitations": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1
+    },
+    "nextSteps": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1
+    },
+    "references": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1
+    }
+  }
+}

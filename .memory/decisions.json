@@ -1,0 +1,74 @@
+[
+  {
+    "id": "D001",
+    "date": "2026-10-08",
+    "status": "accepted",
+    "decision": "Fonte modular Vite e distribuição HTML único versionada.",
+    "rationale": "Manutenção por módulos e jogo disponível por duplo clique; release recompila a distribuição.",
+    "references": [
+      "vite.config.js",
+      "scripts/portable.mjs",
+      "scripts/release.mjs",
+      "docs/DESENVOLVIMENTO.md"
+    ]
+  },
+  {
+    "id": "D002",
+    "date": "2026-10-08",
+    "status": "accepted",
+    "decision": "Preservar Rota isolada e usar reload para voltar ao menu.",
+    "rationale": "Evitar regressões e remover listeners/loops sem refatoração ampla do modo anterior.",
+    "references": [
+      "src/modes/route.js",
+      "src/main.js",
+      "docs/ARQUITETURA.md"
+    ]
+  },
+  {
+    "id": "D003",
+    "date": "2026-10-08",
+    "status": "accepted",
+    "decision": "Gerador determinístico compartilhado entre Worker e física.",
+    "rationale": "Altura consistente para malhas e colisões; dados por seed e chunk.",
+    "references": [
+      "src/world/model.js",
+      "src/world/worker.js",
+      "docs/MUNDO.md"
+    ]
+  },
+  {
+    "id": "D004",
+    "date": "2026-10-08",
+    "status": "accepted",
+    "decision": "Progresso local por seed separado da memória versionada.",
+    "rationale": "Evitar dados pessoais no Git e permitir continuidade técnica entre sessões.",
+    "references": [
+      "src/ui/progress.js",
+      "docs/PERSISTENCIA.md",
+      "MEMORY.md"
+    ]
+  },
+  {
+    "id": "D005",
+    "date": "2026-10-08",
+    "status": "accepted",
+    "decision": "Memória pequena, estruturada, com decisões e journal.",
+    "rationale": "Estado verificável e referências, sem transcrever conversas ou transformar contexto em autorização.",
+    "references": [
+      "AGENTS.md",
+      "MEMORY.md",
+      ".memory/schema.json",
+      "scripts/check-memory.mjs"
+    ]
+  },
+  {
+    "id": "D006",
+    "date": "2026-10-08",
+    "status": "accepted",
+    "decision": "Distinguir testes emulados de desempenho físico.",
+    "rationale": "SwiftShader verifica funcionamento; não certifica fps em celular real.",
+    "references": [
+      "docs/TESTES.md"
+    ]
+  }
+]

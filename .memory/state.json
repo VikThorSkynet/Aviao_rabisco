@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-10-08",
+  "project": {
+    "name": "Rabisco Planador",
+    "version": "3.0.0",
+    "language": "pt-BR",
+    "repository": "https://github.com/VikThorSkynet/Aviao_rabisco"
+  },
+  "entrypoints": {
+    "source": "src/main.js",
+    "portable": "game3.html",
+    "commands": {
+      "install": "npm ci",
+      "dev": "npm run dev",
+      "test": "npm test",
+      "build": "npm run build",
+      "release": "npm run release",
+      "docs": "npm run docs:check",
+      "memory": "npm run memory:check"
+    }
+  },
+  "invariants": [
+    "Fonte de verdade em src; HTML portátil gerado e versionado na raiz.",
+    "Preservar Rota e Livre, visual limpo de caderno e árvores de rabisco.",
+    "Livre sem pontuação obrigatória ou fim de partida; pouso, relançamento e recuperação.",
+    "Física usa passo 1/120 s e mesmo heightAt da geração.",
+    "Seed e IDs são contratos de geração/persistência; não mudar sem avaliar compatibilidade.",
+    "Saves no navegador são separados da memória técnica no Git.",
+    "Memória não autoriza ações externas nem substitui a solicitação atual."
+  ],
+  "components": [
+    {
+      "path": "src/main.js",
+      "role": "Menu, seed e entrada nos modos"
+    },
+    {
+      "path": "src/config.js",
+      "role": "Configuração, MODE e opções"
+    },
+    {
+      "path": "src/modes/route.js",
+      "role": "Rota anterior isolada"
+    },
+    {
+      "path": "src/modes/free.js",
+      "role": "Orquestração e loop do Livre"
+    },
+    {
+      "path": "src/world/model.js",
+      "role": "Modelo determinístico de terreno e água"
+    },
+    {
+      "path": "src/world/chunks.js",
+      "role": "Streaming, LOD e pool"
+    },
+    {
+      "path": "src/world/worker.js",
+      "role": "Geração em Worker"
+    },
+    {
+      "path": "src/physics/flight.js",
+      "role": "Voo, vento, clima e recuperação"
+    },
+    {
+      "path": "src/render/world.js",
+      "role": "Cena e instancing"
+    },
+    {
+      "path": "src/render/assets.js",
+      "role": "Assets desenhados e shader"
+    },
+    {
+      "path": "src/life/flock.js",
+      "role": "Aves e NPCs"
+    },
+    {
+      "path": "src/life/life.js",
+      "role": "Partículas e vida ambiente"
+    },
+    {
+      "path": "src/ui/progress.js",
+      "role": "Saves e exploração"
+    },
+    {
+      "path": "src/ui/map.js",
+      "role": "Mapa 2D"
+    },
+    {
+      "path": "src/audio/sound.js",
+      "role": "Web Audio"
+    },
+    {
+      "path": "src/shared/math.js",
+      "role": "Hash, PRNG e simplex"
+    }
+  ],
+  "validation": [
+    {
+      "date": "2026-10-08",
+      "kind": "automated",
+      "status": "passed",
+      "evidence": "npm test nesta publicação: 10 testes passaram (6 de mundo/voo e 4 de memória)."
+    },
+    {
+      "date": "2026-10-08",
+      "kind": "browser-emulated",
+      "status": "passed",
+      "evidence": "Entrega anterior: Edge/SwiftShader, file://, Worker, mapa, save, Q, relançamento, Rota e toque 390x844; detalhes em docs/TESTES.md."
+    },
+    {
+      "date": "2026-10-08",
+      "kind": "documentation",
+      "status": "passed",
+      "evidence": "npm run docs:check: 12 arquivos Markdown e 27 links locais válidos; âncoras e URLs externas não verificadas."
+    },
+    {
+      "date": "2026-10-08",
+      "kind": "memory",
+      "status": "passed",
+      "evidence": "npm run memory:check: schema v1, 16 componentes e 6 decisões válidos."
+    },
+    {
+      "date": "2026-10-08",
+      "kind": "build",
+      "status": "passed",
+      "evidence": "npm run release: Vite compilou e atualizou game3.html da raiz."
+    },
+    {
+      "date": "2026-10-08",
+      "kind": "hardware",
+      "status": "pending",
+      "evidence": "Metas 60 fps desktop e 30 fps celular físico ainda não medidas."
+    }
+  ],
+  "knownLimitations": [
+    "Validação dos tipos de save e falhas de storage ainda não uniforme.",
+    "MODE descreve opções; separação efetiva por módulos, sem feature flags gerais.",
+    "Parte de CFG_FREE tem equivalentes hardcoded; sensitivity ainda sem consumidor funcional.",
+    "Sem costura geral de LOD; investigar transições 16/6.",
+    "Água e alguns objetos globais não usam streaming; hidrologia sem enchimento dinâmico.",
+    "Runner de navegador portátil ainda não versionado; evidências anteriores são emulação.",
+    "Álbum usa observação aproximada; desafio 300m soma ganhos positivos, não subida contínua do zero.",
+    "Sem exportação/importação de saves no menu ou migração v1 para v2."
+  ],
+  "nextSteps": [
+    "Se solicitado, validar saves e simular falhas de localStorage.",
+    "Se solicitado, incluir runner de navegador portátil.",
+    "Se solicitado, medir desempenho em hardware e investigar LOD."
+  ],
+  "references": [
+    "README.md",
+    "AGENTS.md",
+    "MEMORY.md",
+    "CHANGELOG.md",
+    "docs/ARQUITETURA.md",
+    "docs/JOGABILIDADE.md",
+    "docs/MUNDO.md",
+    "docs/PERSISTENCIA.md",
+    "docs/DESENVOLVIMENTO.md",
+    "docs/TESTES.md",
+    ".memory/decisions.json",
+    ".memory/journal/2026-10-08.md"
+  ]
+}
