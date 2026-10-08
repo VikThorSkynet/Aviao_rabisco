@@ -1,5 +1,11 @@
 # Histórico
 
+## Atualizações de documentação — 2026-10-08
+
+- Mapeamento visual da Rota e critérios de alinhamento do Livre, também publicados na issue #1.
+- Regra persistente para perguntar sobre commit ao finalizar tarefas, salvo autorização explícita já dada na tarefa atual.
+- Código do jogo e distribuição sem alterações.
+
 ## 3.0.0 — 2026-10-08
 
 - Fonte Vite modular e HTML portátil.

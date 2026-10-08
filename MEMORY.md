@@ -58,7 +58,7 @@ Mudanças em comportamento, saves, arquitetura, dependências ou distribuição 
 3. Acrescente decisão quando a escolha precisar sobreviver a sessões futuras.
 4. Registre acontecimento no journal do dia.
 5. Rode memory:check e docs:check.
-6. Faça commit junto da mudança descrita.
+6. Ao concluir a tarefa, apresente mudanças e validação e pergunte: **"Posso fazer o commit dessas alterações?"** Aguarde autorização explícita para versionar junto da mudança descrita. Se o usuário já pediu esse commit na tarefa atual, prossiga sem repetir a confirmação; autorização antiga não vale para tarefa nova.
 
 Não guardar SHA do próprio commit dentro dele; use histórico Git. Não inventar resultados. Diferencie teste automatizado, inspeção, navegador emulado e hardware físico.
 

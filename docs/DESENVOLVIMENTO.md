@@ -33,7 +33,7 @@ npm run dev
 5. Execute testes pertinentes e verificadores de docs/memória.
 6. Para mudanças no jogo, teste navegador e execute release.
 7. Registre evidências, limitações e decisões na memória.
-8. Revise diff e faça commit com propósito claro.
+8. Revise o diff e apresente mudanças e validação. Ao finalizar, pergunte **"Posso fazer o commit dessas alterações?"** e aguarde autorização explícita. Um pedido de commit já feito pelo usuário na tarefa atual permite prosseguir sem perguntar novamente; permissões antigas não autorizam tarefas novas. Push requer autorização aplicável à tarefa atual.
 
 Verificadores de memória/docs não substituem testes de comportamento. Git preserva histórico; `.memory/` resume continuidade.
 

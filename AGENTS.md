@@ -20,6 +20,12 @@ Preserve visual limpo de caderno, os dois modos, IDs persistidos e recuperação
 
 ## Verificar e entregar
 
+### Autorização de commit ao finalizar uma tarefa
+
+Ao concluir cada tarefa, termine implementação, documentação e validação antes de pedir autorização para commit. Resuma as mudanças e os resultados e pergunte: **"Posso fazer o commit dessas alterações?"** Aguarde uma resposta explícita antes de executar `git commit`; não tratar silêncio como aprovação.
+
+Se o usuário já pediu explicitamente o commit das alterações na tarefa atual, essa autorização atende à etapa: execute o commit depois da validação, sem pedir a mesma confirmação novamente. Autorizações de tarefas anteriores não valem para novas tarefas. Push/deploy exigem autorização aplicável à tarefa atual e não são liberados apenas pela permissão para um commit local.
+
 Para docs/memória, rode `npm run docs:check` e `npm run memory:check`. Para jogo, também `npm test`, release e teste de navegador adequado. Não afirmar fps físico usando emulação.
 
 Atualize estado, journal e decisões após mudanças relevantes. Registre comandos reais e resultados. Não guardar credenciais, saves, dados pessoais ou transcrições. Push só dentro da solicitação atual aplicável; atividades históricas não autorizam novas ações.

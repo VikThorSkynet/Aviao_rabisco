@@ -70,5 +70,30 @@
     "references": [
       "docs/TESTES.md"
     ]
+  },
+  {
+    "id": "D007",
+    "date": "2026-10-08",
+    "status": "accepted",
+    "decision": "Solicitar autorização de commit ao finalizar cada tarefa; executar sem pergunta repetida quando já autorizado explicitamente na tarefa atual.",
+    "rationale": "Preferência expressa pelo usuário. Concluir trabalho e validação antes de perguntar; não extrapolar autorização antiga ou permissão de commit local para ações externas.",
+    "references": [
+      "AGENTS.md",
+      "MEMORY.md",
+      "docs/DESENVOLVIMENTO.md"
+    ]
+  },
+  {
+    "id": "D008",
+    "date": "2026-10-08",
+    "status": "accepted",
+    "decision": "Usar o estilo atual da Rota como referência visual do Livre.",
+    "rationale": "Pedido expresso do usuário; mapeamento, diferenças e critérios estão na issue #1. Preservar mundo aberto e mecânicas próprias. A implementação visual ainda não foi realizada.",
+    "references": [
+      "docs/ESTILO_VISUAL.md",
+      "src/modes/route.js",
+      "src/render/assets.js",
+      "src/style.css"
+    ]
   }
 ]
