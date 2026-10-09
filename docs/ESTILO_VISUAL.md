@@ -1,6 +1,6 @@
 # Estilo visual: referência da Rota e alinhamento do Livre
 
-Planejamento publicado na [issue #1](https://github.com/VikThorSkynet/Aviao_rabisco/issues/1). O alinhamento visual ainda está pendente; este documento versiona o mapeamento e seus critérios de aceite.
+Planejamento publicado na [issue #1](https://github.com/VikThorSkynet/Aviao_rabisco/issues/1). Implementação realizada e validada em 2026-10-09, com entrega aprovada pelo usuário. Evidências em [VALIDACAO_VISUAL.md](VALIDACAO_VISUAL.md).
 
 ## Objetivo
 
@@ -95,36 +95,36 @@ Captura do Livre na versão analisada:
 
 ### 1. Definir uma linguagem compartilhada
 
-- [ ] Extrair paleta, tinta, papel, tipografia, espessuras e intensidade de grão para um tema comum.
-- [ ] Criar materiais/helpers visuais compartilhados em `src/render/` e estilos comuns de cartão em CSS.
-- [ ] Extrair os helpers da Rota de forma incremental, preservando sua aparência e seus sistemas atuais; não importar `startRoute()` para inicializar materiais.
-- [ ] Centralizar textura/cor e configurar color space das texturas de canvas, evitando diferenças entre modos.
-- [ ] Garantir tipografia consistente e offline, com licenças de fontes quando houver novos assets.
+- [x] Extrair paleta, tinta, papel, tipografia, espessuras e intensidade de grão para um tema comum.
+- [x] Criar materiais/helpers visuais compartilhados em `src/render/` e estilos comuns de cartão em CSS.
+- [x] Extrair os helpers da Rota de forma incremental, preservando sua aparência e seus sistemas atuais; não importar `startRoute()` para inicializar materiais.
+- [x] Centralizar textura/cor e configurar color space das texturas de canvas, evitando diferenças entre modos.
+- [x] Garantir tipografia consistente e offline, com licenças de fontes quando houver novos assets.
 
 ### 2. Prioridade de maior impacto visual
 
-- [ ] Céu ilustrado e papel diurno compatíveis com Rota.
-- [ ] Mesmo acabamento de avião: dobras, branco de papel, tinta e linha irregular legível.
-- [ ] Árvores com as quatro variantes da Rota, copa irregular e rabiscos internos; preservar instancing/atlas e variação determinística.
-- [ ] Nuvens de desenho, incluindo indicadores de térmicas.
-- [ ] HUD, mapa, ajuda e notificações em cartões da mesma família gráfica.
+- [x] Céu ilustrado e papel diurno compatíveis com Rota.
+- [x] Mesmo acabamento de avião: dobras, branco de papel, tinta e linha irregular legível.
+- [x] Árvores com as quatro variantes da Rota, copa irregular e rabiscos internos; preservar instancing/atlas e variação determinística.
+- [x] Nuvens de desenho, incluindo indicadores de térmicas.
+- [x] HUD, mapa, ajuda e notificações em cartões da mesma família gráfica.
 
 ### 3. Estender a linguagem ao mundo aberto
 
-- [ ] Estilizar terreno, rochas e picos com hachura, papel e contorno seletivo; manter curvas de nível úteis e discretas.
-- [ ] Desenhar penas e folhas reconhecíveis, substituindo o aspecto de cristal dos coletáveis.
-- [ ] Água como tinta azul com linhas onduladas; cachoeira e névoa com traço/texture boil controlado.
-- [ ] Casas, pontes-régua, balões, aves e barcos com acabamento de papelaria/rabisco consistente.
-- [ ] Adaptar noite, chuva e arco-íris mantendo textura de papel, traço e legibilidade.
-- [ ] Usar flores/grama e adereços pontualmente, com clareiras e corredores de voo livres visualmente.
-- [ ] Adicionar rastro e sombra ilustrada proporcionais ao contexto do Livre, sem criar ruído excessivo.
+- [x] Estilizar terreno, rochas e picos com hachura, papel e contorno seletivo; manter curvas de nível úteis e discretas.
+- [x] Desenhar penas e folhas reconhecíveis, substituindo o aspecto de cristal dos coletáveis.
+- [x] Água como tinta azul com linhas onduladas; cachoeira e névoa com traço/texture boil controlado.
+- [x] Casas, pontes-régua, balões, aves e barcos com acabamento de papelaria/rabisco consistente.
+- [x] Adaptar noite, chuva e arco-íris mantendo textura de papel, traço e legibilidade.
+- [x] Usar flores/grama e adereços pontualmente, com clareiras e corredores de voo livres visualmente.
+- [x] Adicionar rastro e sombra ilustrada proporcionais ao contexto do Livre, sem criar ruído excessivo.
 
 ### 4. Polir com orçamento de desempenho
 
-- [ ] Boil de baixa amplitude/cadência, sem atualizar texturas grandes ou criar objetos por frame.
-- [ ] Qualidade leve mantém a identidade visual mesmo com menos hachura, detalhe e objetos distantes.
-- [ ] Manter pools, Worker, instancing, LOD e descarte correto de recursos.
-- [ ] Avaliar névoa e enquadramento em conjunto: esconder streaming sem transformar o cenário num fundo lavado.
+- [x] Boil de baixa amplitude/cadência, sem atualizar texturas grandes ou criar objetos por frame.
+- [x] Qualidade leve mantém a identidade visual mesmo com menos hachura, detalhe e objetos distantes.
+- [x] Manter pools, Worker, instancing, LOD e descarte correto de recursos.
+- [x] Avaliar névoa e enquadramento em conjunto: esconder streaming sem transformar o cenário num fundo lavado.
 
 ## Limites de escopo
 
@@ -136,18 +136,18 @@ Captura do Livre na versão analisada:
 
 ## Critérios de aceite
 
-- [ ] Comparação lado a lado deixa claro que ambos os modos pertencem ao mesmo jogo: papel, traço, árvores, avião e cartões têm a mesma família visual.
-- [ ] Céu diurno do Livre tem tratamento ilustrado, degradê/papel e detalhes alegres compatíveis com a Rota.
-- [ ] Árvores apresentam variação pastel, tronco desenhado, copa irregular e loops internos; não predominam elipses verdes idênticas.
-- [ ] Avião permanece legível contra vegetação, água, terreno claro e noite, com dobras e contorno apropriados.
-- [ ] HUD/mapa/álbum/ajuda têm cartões e tipografia coerentes; fontes/fallbacks funcionam no HTML portátil sem internet.
-- [ ] Nuvens, água e objetos novos mantêm linguagem de rabisco; não se destacam como sólidos lisos/genéricos de motor 3D.
-- [ ] Textura e boil são sutis, sem voltar à poluição visual das versões anteriores.
-- [ ] Capturas comparativas da Rota e do Livre são anexadas ao trabalho, em **1365 × 768** e **390 × 844**, incluindo início de voo, floresta, cachoeira/vila, mapa e noite no Livre. Mesma qualidade e condições diurnas comparáveis; registrar seed/versão para repetir o Livre.
-- [ ] Rota mantém sua aparência e funciona após a extração de helpers; Livre mantém pouso, relançamento, recuperação, coleta e persistência.
-- [ ] `npm test`, `npm run docs:check`, `npm run memory:check` e `npm run release` passam; console sem erros de shader/Worker.
-- [ ] Registrar custo de renderização e estabilidade de recursos antes/depois em alta e leve. Não certificar fps físico usando somente emulação/SwiftShader.
-- [ ] Atualizar documentação, memória e changelog com o tema compartilhado e a validação efetivamente realizada.
+- [x] Comparação lado a lado deixa claro que ambos os modos pertencem ao mesmo jogo: papel, traço, árvores, avião e cartões têm a mesma família visual.
+- [x] Céu diurno do Livre tem tratamento ilustrado, degradê/papel e detalhes alegres compatíveis com a Rota.
+- [x] Árvores apresentam variação pastel, tronco desenhado, copa irregular e loops internos; não predominam elipses verdes idênticas.
+- [x] Avião permanece legível contra vegetação, água, terreno claro e noite, com dobras e contorno apropriados.
+- [x] HUD/mapa/álbum/ajuda têm cartões e tipografia coerentes; fontes/fallbacks funcionam no HTML portátil sem internet.
+- [x] Nuvens, água e objetos novos mantêm linguagem de rabisco; não se destacam como sólidos lisos/genéricos de motor 3D.
+- [x] Textura e boil são sutis, sem voltar à poluição visual das versões anteriores.
+- [x] Capturas comparativas da Rota e do Livre são anexadas ao trabalho, em **1365 × 768** e **390 × 844**, incluindo início de voo, floresta, cachoeira/vila, mapa e noite no Livre. Mesma qualidade e condições diurnas comparáveis; registrar seed/versão para repetir o Livre.
+- [x] Rota mantém sua aparência e funciona após a extração de helpers; Livre mantém pouso, relançamento, recuperação, coleta e persistência.
+- [x] `npm test`, `npm run docs:check`, `npm run memory:check` e `npm run release` passam; console sem erros de shader/Worker.
+- [x] Registrar custo de renderização e estabilidade de recursos antes/depois em alta e leve. Não certificar fps físico usando somente emulação/SwiftShader.
+- [x] Atualizar documentação, memória e changelog com o tema compartilhado e a validação efetivamente realizada.
 
 ## Sugestão de entrega
 

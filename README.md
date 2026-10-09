@@ -52,9 +52,10 @@ No celular, arraste para guiar e use **Soprar**. No chão, segure e solte o bot�
 | [Arquitetura](docs/ARQUITETURA.md) | Módulos, execução, Worker e renderização |
 | [Jogabilidade](docs/JOGABILIDADE.md) | Controles, voo, pouso e exploração |
 | [Mundo](docs/MUNDO.md) | Seed, relevo, água, chunks, biomas e configuração |
-| [Estilo visual](docs/ESTILO_VISUAL.md) | Mapeamento da Rota e plano de fidelidade gráfica do Livre, issue #1 |
+| [Estilo visual](docs/ESTILO_VISUAL.md) | Tema compartilhado, implementação local e critérios da issue #1 |
 | [Persistência](docs/PERSISTENCIA.md) | localStorage, formato de save e evolução |
 | [Desenvolvimento](docs/DESENVOLVIMENTO.md) | Build, depuração, manutenção e release |
+| [Validação visual](docs/VALIDACAO_VISUAL.md) | Capturas desktop/móvel e custo antes/depois |
 | [Testes](docs/TESTES.md) | Evidências, cobertura e limitações |
 | [Memória](MEMORY.md) | Contexto persistente para futuras sessões |
 | [Histórico](CHANGELOG.md) | Entregas |

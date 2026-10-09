@@ -1,3 +1,16 @@
+import { paperPlaneGeometry } from "../render/assets.js";
+import {
+  canvasTex,
+  fibers,
+  wobblyLine,
+  groundTexture,
+  skyTexture,
+  treeTexture,
+  flowerTexture,
+  cloudTexture,
+  shadowTexture,
+} from "../render/paper-art.js";
+import { LOOK } from "../render/theme.js";
 import * as THREE from "three";
 import { mergeVertices } from "three/addons/utils/BufferGeometryUtils.js";
 import { LineSegments2 } from "three/addons/lines/LineSegments2.js";
@@ -5,7 +18,7 @@ import { LineSegmentsGeometry } from "three/addons/lines/LineSegmentsGeometry.js
 import { LineMaterial } from "three/addons/lines/LineMaterial.js";
 export function startRoute(onExit) {
   document.body.innerHTML =
-    '<style>\n  :root{--ink:#1d2a4a;--red:#c0392b;--paper:#f7f3e8;--blue:#1d3b8b}\n  html,body{margin:0;height:100%;overflow:hidden;background:var(--paper);font-family:\'Patrick Hand\',cursive;touch-action:none;user-select:none}\n  canvas{display:block}\n  #grain{position:fixed;inset:0;pointer-events:none;mix-blend-mode:multiply;opacity:.28}\n  #vignette{position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,rgba(0,0,0,0) 55%,rgba(90,70,40,.22) 100%)}\n  .sketch{background:#fffdf6;color:var(--ink);border:2px solid var(--ink);\n    border-radius:255px 15px 225px 15px/15px 225px 15px 255px;box-shadow:3px 4px 0 rgba(0,0,0,.08);position:relative}\n  .sketch:before{content:\'\';position:absolute;top:-12px;left:50%;width:74px;height:22px;margin-left:-37px;\n    background:rgba(240,215,110,.75);transform:rotate(3deg)}\n  #hud{position:fixed;top:16px;left:16px;padding:10px 18px 12px;font-size:20px;line-height:1.3;transform:rotate(-1.5deg);pointer-events:none}\n  #hud b{color:var(--red)}\n  #altbar{position:fixed;right:22px;top:24vh;height:50vh;width:14px;border:2px solid var(--ink);\n    border-radius:8px 3px 9px 4px;background:repeating-linear-gradient(0deg,transparent 0 9px,rgba(29,59,139,.35) 9px 11px);pointer-events:none}\n  #altmark{position:absolute;left:-14px;width:40px;text-align:center;font-size:26px;color:var(--red);transform:translateY(50%) rotate(-20deg)}\n  #altlabel{position:absolute;top:-30px;left:-14px;width:44px;text-align:center;color:var(--ink);font-size:16px}\n  #combo{position:fixed;top:64px;right:70px;font-family:\'Caveat\',cursive;font-size:60px;color:var(--red);transform:rotate(-6deg);\n    pointer-events:none;text-decoration:underline;text-decoration-thickness:3px;text-underline-offset:6px;opacity:0;transition:opacity .2s}\n  #combo.on{opacity:1}\n  #combo.pop{animation:pop .3s ease-out}\n  @keyframes pop{0%{transform:rotate(-6deg) scale(1.7)}100%{transform:rotate(-6deg) scale(1)}}\n  .float{position:fixed;font-family:\'Caveat\',cursive;font-size:38px;pointer-events:none;white-space:nowrap;\n    transform:translate(-50%,-50%);animation:floatUp 1s ease-out forwards;text-shadow:0 0 4px #fffdf6}\n  .float.big{font-size:52px}\n  @keyframes floatUp{0%{opacity:0;transform:translate(-50%,-30%) scale(.6) rotate(-6deg)}\n    15%{opacity:1;transform:translate(-50%,-50%) scale(1.15) rotate(-4deg)}\n    100%{opacity:0;transform:translate(-50%,-170%) scale(1) rotate(-2deg)}}\n  #msg{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}\n  #msg .card{padding:26px 40px 22px;text-align:center;font-size:24px;transform:rotate(-1deg);max-width:86vw}\n  #msg h1{font-family:\'Caveat\',cursive;font-size:72px;margin:0 0 6px;color:var(--red);transform:rotate(-3deg);\n    text-decoration:underline wavy rgba(192,57,43,.6);text-underline-offset:10px}\n  #msg small{color:#666;font-size:18px}\n  #flash{position:fixed;top:22%;left:0;right:0;text-align:center;font-family:\'Caveat\',cursive;font-size:60px;color:var(--red);\n    pointer-events:none;opacity:0;transition:opacity .2s;transform:rotate(-4deg)}\n  #help{position:fixed;bottom:10px;left:0;right:0;text-align:center;color:#555;font-size:16px;pointer-events:none}\n  #q{position:fixed;top:16px;right:16px;padding:6px 14px;font-family:inherit;font-size:17px;cursor:pointer;transform:rotate(1.5deg)}\n  #q:before{display:none}\n  #collection{position:fixed;top:260px;left:16px;padding:5px 10px;font-size:17px;color:var(--ink);background:#fffdf6d9;pointer-events:none;border:1px dashed var(--ink);border-radius:5px}\n  #debug{position:fixed;bottom:42px;left:16px;padding:8px 12px;font-size:16px;color:var(--ink);background:#fffdf6e8;border:1px dashed var(--ink);pointer-events:none}\n  .regen{display:inline-block;position:relative;width:18px;color:#b3aea3;vertical-align:baseline}\n  .regen i{position:absolute;inset:0;width:var(--progress);overflow:hidden;font-style:normal;color:#418c4c}\n  .missed{font-size:17px;margin-top:8px}\n  .checkpoint-choice{pointer-events:auto;font:inherit;color:var(--blue);background:#fffdf6;border:1px dashed var(--blue);border-radius:5px;padding:4px 8px;cursor:pointer}\n  .complete-badge{color:#418c4c}\n  #msg .card{max-height:82vh;overflow:auto}\n  @media(max-width:600px){#hud{font-size:16px;top:10px;left:8px;padding:8px 12px}#collection{top:218px;left:8px;font-size:14px}#msg h1{font-size:46px}#msg .card{font-size:19px;padding:18px 22px}#debug{font-size:13px;bottom:50px}#help{font-size:12px;padding:0 6px}}\n:root{--ink:#40515b;--red:#d77c62;--paper:#fff8e8;--blue:#4c8897}\nhtml,body{background:#eef4e8}\n#grain{opacity:.06}\n#vignette{background:radial-gradient(ellipse at center,transparent 70%,rgba(108,145,121,.07))}\n.sketch{background:rgba(255,252,240,.94);border:1.5px solid #657c76;box-shadow:2px 3px 0 rgba(86,109,95,.06)}\n.sketch:before{width:48px;margin-left:-24px;height:15px;top:-8px;background:#ecdfa78c}\n#hud{top:22px;left:22px;padding:11px 17px 10px;font-size:18px;line-height:1.25;transform:rotate(-1deg);min-width:114px}\n#hud .score{font:700 32px \'Caveat\',cursive;line-height:1;color:#bf765a}\n#hud .hud-small{font-size:15px;color:#71827d}\n#hud .charges{font-size:21px;color:#a39e52;letter-spacing:3px}\n#collection{top:auto;bottom:48px;left:22px;font-size:16px;background:#fffbefbd;border:0;border-radius:10px;padding:7px 12px;color:#64786b}\n#altbar{width:6px;right:27px;top:auto;bottom:66px;height:90px;border:1px solid #8ba397;background:#dce9d5a6;border-radius:5px}\n#altlabel{font-size:13px;left:-20px;top:-23px;width:46px;color:#71867c}\n#altmark{font-size:19px;left:-13px;width:31px;color:#b78954;transform:translateY(50%)}\n#combo{font-size:32px;top:24px;right:auto;left:185px;color:#bd7d53;text-decoration:none;transform:rotate(-4deg)}\n#combo.pop{animation:gentlePop .25s ease-out}\n@keyframes gentlePop{from{transform:rotate(-4deg) scale(1.14)}to{transform:rotate(-4deg) scale(1)}}\n#flash{top:auto;bottom:94px;font:22px \'Patrick Hand\',cursive;color:#568b6f;transform:none}\n.float{font-size:23px;text-shadow:0 1px 4px #fff8e8;animation:floatUp .7s ease-out forwards}\n.float.big{font-size:29px}\n#msg .card{padding:28px 38px 24px;width:min(410px,80vw);font-size:21px;transform:rotate(-.6deg);border-radius:28px 12px 26px 14px;max-height:80vh}\n#msg h1{font-size:56px;line-height:1.06;color:#bb7557;transform:rotate(-2deg);text-decoration:none;margin-bottom:10px}\n#msg small{font-size:16px;color:#7f9083}\n.welcome-sub{color:#789780;margin:0 0 18px;font-size:22px}\n.welcome-icons{display:flex;justify-content:center;gap:26px;color:#6e8c7c;font-size:16px;margin:18px 0}\n.welcome-icons b{display:block;font-size:30px;font-weight:normal;color:#b39655}\n.play-button{display:block;margin:18px auto 16px;padding:9px 32px;border:1.5px solid #6c9278;background:#dceccb;color:#4c755a;border-radius:20px 12px 18px 12px;cursor:pointer;pointer-events:auto;font:24px \'Caveat\',cursive;box-shadow:0 3px 0 #aec69b66}\n.play-button:hover{background:#cfe4ba;transform:translateY(-1px)}\n#q{top:20px;right:20px;border-color:#acc0ad;background:#fffcf099;color:#6f8d79;font-size:15px;padding:6px 12px;box-shadow:none;border-radius:9px;transform:none}\n#help{font-size:14px;bottom:14px;color:#748c7d;letter-spacing:.2px}\n#journey{position:fixed;top:25px;left:50%;transform:translateX(-50%);width:170px;text-align:center;pointer-events:none;color:#7c9481;font-size:14px}\n#journey .track{height:4px;margin-top:5px;background:#b8cdbf88;border-radius:10px;overflow:hidden}\n#journey .track i{height:100%;display:block;background:#94b891;border-radius:10px;transition:width .15s}\n#debug{font-size:14px;border-color:#8bac91;background:#fffbeaeb;bottom:84px}\n.missed{font-size:15px;color:#728776}.checkpoint-choice{border-color:#a4b7a4;font-size:14px;color:#5b8b74}\n@media(max-width:600px){#hud{top:14px;left:12px;font-size:16px;padding:8px 12px;min-width:94px}#hud .score{font-size:29px}#hud .hud-small{font-size:13px}#collection{left:10px;bottom:57px;font-size:13px}#combo{top:18px;left:141px;font-size:26px}#q{top:12px;right:12px;padding:5px 8px;font-size:13px}#journey{top:119px;width:138px}#msg .card{padding:21px 22px;width:80vw;font-size:18px}#msg h1{font-size:44px}.welcome-icons{gap:18px;font-size:14px}#help{font-size:11px;padding:0 18px;bottom:12px}#altbar{right:18px;bottom:78px;height:75px}#flash{font-size:19px;bottom:95px}}\n\n</style>\n<div id="hud" class="sketch"></div>\n<div id="altbar"><div id="altlabel">altura</div><div id="altmark">✈</div></div>\n<div id="journey"><span>jardim de papel</span><div class="track"><i></i></div></div>\n<div id="collection"></div>\n<div id="debug" hidden></div>\n<div id="combo"></div>\n<div id="flash"></div>\n<div id="msg"></div>\n<button id="q" class="sketch">✎ alta</button>\n<div id="help">← → virar · ↑ ↓ altura · espaço: sopro · C: voltar · H: ajuda</div>\n<div id="grain"></div>\n<div id="vignette"></div>\n\n';
+    '<style>\n  :root{--ink:#1d2a4a;--red:#c0392b;--paper:#f7f3e8;--blue:#1d3b8b}\n  html,body{margin:0;height:100%;overflow:hidden;background:var(--paper);font-family:var(--font-hand);touch-action:none;user-select:none}\n  canvas{display:block}\n  #grain{position:fixed;inset:0;pointer-events:none;mix-blend-mode:multiply;opacity:.28}\n  #vignette{position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,rgba(0,0,0,0) 55%,rgba(90,70,40,.22) 100%)}\n  .sketch{background:#fffdf6;color:var(--ink);border:2px solid var(--ink);\n    border-radius:255px 15px 225px 15px/15px 225px 15px 255px;box-shadow:3px 4px 0 rgba(0,0,0,.08);position:relative}\n  .sketch:before{content:\'\';position:absolute;top:-12px;left:50%;width:74px;height:22px;margin-left:-37px;\n    background:rgba(240,215,110,.75);transform:rotate(3deg)}\n  #hud{position:fixed;top:16px;left:16px;padding:10px 18px 12px;font-size:20px;line-height:1.3;transform:rotate(-1.5deg);pointer-events:none}\n  #hud b{color:var(--red)}\n  #altbar{position:fixed;right:22px;top:24vh;height:50vh;width:14px;border:2px solid var(--ink);\n    border-radius:8px 3px 9px 4px;background:repeating-linear-gradient(0deg,transparent 0 9px,rgba(29,59,139,.35) 9px 11px);pointer-events:none}\n  #altmark{position:absolute;left:-14px;width:40px;text-align:center;font-size:26px;color:var(--red);transform:translateY(50%) rotate(-20deg)}\n  #altlabel{position:absolute;top:-30px;left:-14px;width:44px;text-align:center;color:var(--ink);font-size:16px}\n  #combo{position:fixed;top:64px;right:70px;font-family:var(--font-hand);font-size:60px;color:var(--red);transform:rotate(-6deg);\n    pointer-events:none;text-decoration:underline;text-decoration-thickness:3px;text-underline-offset:6px;opacity:0;transition:opacity .2s}\n  #combo.on{opacity:1}\n  #combo.pop{animation:pop .3s ease-out}\n  @keyframes pop{0%{transform:rotate(-6deg) scale(1.7)}100%{transform:rotate(-6deg) scale(1)}}\n  .float{position:fixed;font-family:var(--font-hand);font-size:38px;pointer-events:none;white-space:nowrap;\n    transform:translate(-50%,-50%);animation:floatUp 1s ease-out forwards;text-shadow:0 0 4px #fffdf6}\n  .float.big{font-size:52px}\n  @keyframes floatUp{0%{opacity:0;transform:translate(-50%,-30%) scale(.6) rotate(-6deg)}\n    15%{opacity:1;transform:translate(-50%,-50%) scale(1.15) rotate(-4deg)}\n    100%{opacity:0;transform:translate(-50%,-170%) scale(1) rotate(-2deg)}}\n  #msg{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}\n  #msg .card{padding:26px 40px 22px;text-align:center;font-size:24px;transform:rotate(-1deg);max-width:86vw}\n  #msg h1{font-family:var(--font-hand);font-size:72px;margin:0 0 6px;color:var(--red);transform:rotate(-3deg);\n    text-decoration:underline wavy rgba(192,57,43,.6);text-underline-offset:10px}\n  #msg small{color:#666;font-size:18px}\n  #flash{position:fixed;top:22%;left:0;right:0;text-align:center;font-family:var(--font-hand);font-size:60px;color:var(--red);\n    pointer-events:none;opacity:0;transition:opacity .2s;transform:rotate(-4deg)}\n  #help{position:fixed;bottom:10px;left:0;right:0;text-align:center;color:#555;font-size:16px;pointer-events:none}\n  #q{position:fixed;top:16px;right:16px;padding:6px 14px;font-family:inherit;font-size:17px;cursor:pointer;transform:rotate(1.5deg)}\n  #q:before{display:none}\n  #collection{position:fixed;top:260px;left:16px;padding:5px 10px;font-size:17px;color:var(--ink);background:#fffdf6d9;pointer-events:none;border:1px dashed var(--ink);border-radius:5px}\n  #debug{position:fixed;bottom:42px;left:16px;padding:8px 12px;font-size:16px;color:var(--ink);background:#fffdf6e8;border:1px dashed var(--ink);pointer-events:none}\n  .regen{display:inline-block;position:relative;width:18px;color:#b3aea3;vertical-align:baseline}\n  .regen i{position:absolute;inset:0;width:var(--progress);overflow:hidden;font-style:normal;color:#418c4c}\n  .missed{font-size:17px;margin-top:8px}\n  .checkpoint-choice{pointer-events:auto;font:inherit;color:var(--blue);background:#fffdf6;border:1px dashed var(--blue);border-radius:5px;padding:4px 8px;cursor:pointer}\n  .complete-badge{color:#418c4c}\n  #msg .card{max-height:82vh;overflow:auto}\n  @media(max-width:600px){#hud{font-size:16px;top:10px;left:8px;padding:8px 12px}#collection{top:218px;left:8px;font-size:14px}#msg h1{font-size:46px}#msg .card{font-size:19px;padding:18px 22px}#debug{font-size:13px;bottom:50px}#help{font-size:12px;padding:0 6px}}\n:root{--ink:#40515b;--red:#d77c62;--paper:#fff8e8;--blue:#4c8897}\nhtml,body{background:#eef4e8}\n#grain{opacity:.06}\n#vignette{background:radial-gradient(ellipse at center,transparent 70%,rgba(108,145,121,.07))}\n.sketch{background:rgba(255,252,240,.94);border:1.5px solid #657c76;box-shadow:2px 3px 0 rgba(86,109,95,.06)}\n.sketch:before{width:48px;margin-left:-24px;height:15px;top:-8px;background:#ecdfa78c}\n#hud{top:22px;left:22px;padding:11px 17px 10px;font-size:18px;line-height:1.25;transform:rotate(-1deg);min-width:114px}\n#hud .score{font:700 32px var(--font-hand);line-height:1;color:#bf765a}\n#hud .hud-small{font-size:15px;color:#71827d}\n#hud .charges{font-size:21px;color:#a39e52;letter-spacing:3px}\n#collection{top:auto;bottom:48px;left:22px;font-size:16px;background:#fffbefbd;border:0;border-radius:10px;padding:7px 12px;color:#64786b}\n#altbar{width:6px;right:27px;top:auto;bottom:66px;height:90px;border:1px solid #8ba397;background:#dce9d5a6;border-radius:5px}\n#altlabel{font-size:13px;left:-20px;top:-23px;width:46px;color:#71867c}\n#altmark{font-size:19px;left:-13px;width:31px;color:#b78954;transform:translateY(50%)}\n#combo{font-size:32px;top:24px;right:auto;left:185px;color:#bd7d53;text-decoration:none;transform:rotate(-4deg)}\n#combo.pop{animation:gentlePop .25s ease-out}\n@keyframes gentlePop{from{transform:rotate(-4deg) scale(1.14)}to{transform:rotate(-4deg) scale(1)}}\n#flash{top:auto;bottom:94px;font:22px \'Patrick Hand\',cursive;color:#568b6f;transform:none}\n.float{font-size:23px;text-shadow:0 1px 4px #fff8e8;animation:floatUp .7s ease-out forwards}\n.float.big{font-size:29px}\n#msg .card{padding:28px 38px 24px;width:min(410px,80vw);font-size:21px;transform:rotate(-.6deg);border-radius:28px 12px 26px 14px;max-height:80vh}\n#msg h1{font-size:56px;line-height:1.06;color:#bb7557;transform:rotate(-2deg);text-decoration:none;margin-bottom:10px}\n#msg small{font-size:16px;color:#7f9083}\n.welcome-sub{color:#789780;margin:0 0 18px;font-size:22px}\n.welcome-icons{display:flex;justify-content:center;gap:26px;color:#6e8c7c;font-size:16px;margin:18px 0}\n.welcome-icons b{display:block;font-size:30px;font-weight:normal;color:#b39655}\n.play-button{display:block;margin:18px auto 16px;padding:9px 32px;border:1.5px solid #6c9278;background:#dceccb;color:#4c755a;border-radius:20px 12px 18px 12px;cursor:pointer;pointer-events:auto;font:24px var(--font-hand);box-shadow:0 3px 0 #aec69b66}\n.play-button:hover{background:#cfe4ba;transform:translateY(-1px)}\n#q{top:20px;right:20px;border-color:#acc0ad;background:#fffcf099;color:#6f8d79;font-size:15px;padding:6px 12px;box-shadow:none;border-radius:9px;transform:none}\n#help{font-size:14px;bottom:14px;color:#748c7d;letter-spacing:.2px}\n#journey{position:fixed;top:25px;left:50%;transform:translateX(-50%);width:170px;text-align:center;pointer-events:none;color:#7c9481;font-size:14px}\n#journey .track{height:4px;margin-top:5px;background:#b8cdbf88;border-radius:10px;overflow:hidden}\n#journey .track i{height:100%;display:block;background:#94b891;border-radius:10px;transition:width .15s}\n#debug{font-size:14px;border-color:#8bac91;background:#fffbeaeb;bottom:84px}\n.missed{font-size:15px;color:#728776}.checkpoint-choice{border-color:#a4b7a4;font-size:14px;color:#5b8b74}\n@media(max-width:600px){#hud{top:14px;left:12px;font-size:16px;padding:8px 12px;min-width:94px}#hud .score{font-size:29px}#hud .hud-small{font-size:13px}#collection{left:10px;bottom:57px;font-size:13px}#combo{top:18px;left:141px;font-size:26px}#q{top:12px;right:12px;padding:5px 8px;font-size:13px}#journey{top:119px;width:138px}#msg .card{padding:21px 22px;width:80vw;font-size:18px}#msg h1{font-size:44px}.welcome-icons{gap:18px;font-size:14px}#help{font-size:11px;padding:0 18px;bottom:12px}#altbar{right:18px;bottom:78px;height:75px}#flash{font-size:19px;bottom:95px}}\n\n</style>\n<div id="hud" class="sketch"></div>\n<div id="altbar"><div id="altlabel">altura</div><div id="altmark">✈</div></div>\n<div id="journey"><span>jardim de papel</span><div class="track"><i></i></div></div>\n<div id="collection"></div>\n<div id="debug" hidden></div>\n<div id="combo"></div>\n<div id="flash"></div>\n<div id="msg"></div>\n<button id="q" class="sketch">✎ alta</button>\n<div id="help">← → virar · ↑ ↓ altura · espaço: sopro · C: voltar · H: ajuda</div>\n<div id="grain"></div>\n<div id="vignette"></div>\n\n';
 
   // ================== CONFIG ==================
   const CFG = {
@@ -103,14 +116,6 @@ export function startRoute(onExit) {
     measured: null,
     lastSpeed: CFG.startSpeed,
     group: null,
-  };
-  const LOOK = {
-    paper: "#eef4e4",
-    ink: "#40515b",
-    fogNear: 120,
-    fogFar: 550,
-    outlinePx: 1.3,
-    boilFps: 5,
   };
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const rnd = Math.random;
@@ -356,207 +361,6 @@ export function startRoute(onExit) {
   ];
 
   // ================== TEXTURAS DESENHADAS (canvas) ==================
-  function wobblyLine(g, x1, y1, x2, y2, amp) {
-    const n = Math.ceil(Math.hypot(x2 - x1, y2 - y1) / 12);
-    g.beginPath();
-    for (let i = 0; i <= n; i++) {
-      const t = i / n;
-      let x = x1 + (x2 - x1) * t,
-        y = y1 + (y2 - y1) * t;
-      if (i > 0 && i < n) {
-        x += (rnd() - 0.5) * amp;
-        y += (rnd() - 0.5) * amp;
-      }
-      i ? g.lineTo(x, y) : g.moveTo(x, y);
-    }
-    g.stroke();
-  }
-  function fibers(g, S, n) {
-    for (let i = 0; i < n; i++) {
-      g.fillStyle = `rgba(120,100,70,${rnd() * 0.06})`;
-      g.fillRect(rnd() * S, rnd() * S, 1 + rnd() * 2, 1);
-    }
-  }
-  function canvasTex(c, repeat = true) {
-    const t = new THREE.CanvasTexture(c);
-    if (repeat) t.wrapS = t.wrapT = THREE.RepeatWrapping;
-    t.colorSpace = THREE.SRGBColorSpace;
-    return t;
-  }
-  function groundTexture() {
-    const S = 512,
-      c = mkCanvas(S, S),
-      g = c.getContext("2d");
-    g.fillStyle = "#f6f5de";
-    g.fillRect(0, 0, S, S);
-    fibers(g, S, 280);
-    const random = mulberry32(712);
-    for (let i = 0; i < 55; i++) {
-      const x = random() * S,
-        y = random() * S;
-      g.strokeStyle = "rgba(91,144,107,.15)";
-      g.lineWidth = 1.4;
-      g.beginPath();
-      g.moveTo(x - 3, y);
-      g.lineTo(x, y - 5);
-      g.lineTo(x + 3, y);
-      g.stroke();
-    }
-    g.strokeStyle = "rgba(104,162,193,.07)";
-    g.lineWidth = 1;
-    for (let y = 32; y < S; y += 96) wobblyLine(g, 0, y, S, y, 0.6);
-    const t = canvasTex(c);
-    t.repeat.set(90, 90);
-    t.anisotropy = renderer.capabilities.getMaxAnisotropy();
-    return t;
-  }
-  function skyTexture() {
-    const W = 1536,
-      H = 1024,
-      c = mkCanvas(W, H),
-      g = c.getContext("2d");
-    const gradient = g.createLinearGradient(0, 0, 0, H);
-    gradient.addColorStop(0, "#cfeaf2");
-    gradient.addColorStop(0.55, "#eaf4ed");
-    gradient.addColorStop(1, "#fff5da");
-    g.fillStyle = gradient;
-    g.fillRect(0, 0, W, H);
-    fibers(g, W, 400);
-    // A little pencilled sun, away from the central flight path.
-    g.save();
-    g.translate(1225, 150);
-    g.strokeStyle = "#ccac58";
-    g.lineWidth = 3;
-    g.lineCap = "round";
-    g.fillStyle = "#ffe8a0";
-    g.beginPath();
-    for (let i = 0; i <= 50; i++) {
-      const a = (i / 50) * Math.PI * 2,
-        r = 45 + Math.sin(a * 7) * 1.2;
-      const x = Math.cos(a) * r,
-        y = Math.sin(a) * r;
-      i ? g.lineTo(x, y) : g.moveTo(x, y);
-    }
-    g.fill();
-    g.stroke();
-    for (let i = 0; i < 12; i++) {
-      const a = (i / 12) * Math.PI * 2;
-      g.beginPath();
-      g.moveTo(Math.cos(a) * 57, Math.sin(a) * 57);
-      g.lineTo(Math.cos(a) * 69, Math.sin(a) * 69);
-      g.stroke();
-    }
-    g.strokeStyle = "#9b854c";
-    g.lineWidth = 2.4;
-    for (const x of [-12, 12]) {
-      g.beginPath();
-      g.arc(x, -3, 2, 0, Math.PI * 2);
-      g.fillStyle = "#9b854c";
-      g.fill();
-    }
-    g.beginPath();
-    g.arc(0, 5, 12, 0.2, Math.PI - 0.2);
-    g.stroke();
-    g.restore();
-    for (const [x, y, scale] of [
-      [200, 200, 1],
-      [490, 100, 0.65],
-      [1360, 340, 0.7],
-    ]) {
-      g.save();
-      g.translate(x, y);
-      g.scale(scale, scale);
-      g.fillStyle = "rgba(255,255,249,.72)";
-      g.strokeStyle = "rgba(117,150,159,.23)";
-      g.lineWidth = 2.5;
-      g.beginPath();
-      g.moveTo(-70, 20);
-      g.bezierCurveTo(-105, -5, -65, -50, -33, -28);
-      g.bezierCurveTo(-20, -72, 48, -65, 52, -25);
-      g.bezierCurveTo(97, -40, 115, 26, 67, 28);
-      g.bezierCurveTo(25, 31, -36, 31, -70, 20);
-      g.fill();
-      g.stroke();
-      g.restore();
-    }
-    return canvasTex(c, false);
-  }
-  function treeTexture(variant) {
-    const W = 256,
-      H = 384,
-      c = mkCanvas(W, H),
-      g = c.getContext("2d"),
-      random = mulberry32(270 + variant * 17);
-    const palettes = [
-      ["#b2d6a4", "#477e63"],
-      ["#efd696", "#ad9355"],
-      ["#efb4a9", "#b77772"],
-      ["#bfc9e6", "#7b83ab"],
-    ];
-    const [fill, ink] = palettes[variant % 4];
-    g.lineCap = "round";
-    g.lineJoin = "round";
-    g.strokeStyle = "rgba(82,125,82,.24)";
-    g.lineWidth = 3;
-    g.beginPath();
-    g.ellipse(128, 365, 78, 8, 0, 0, Math.PI * 2);
-    g.stroke();
-    g.fillStyle = "#c4a47f";
-    g.strokeStyle = "#866f5a";
-    g.lineWidth = 4;
-    g.beginPath();
-    g.moveTo(117, 357);
-    g.lineTo(112, 176);
-    g.lineTo(143, 180);
-    g.lineTo(137, 357);
-    g.closePath();
-    g.fill();
-    g.stroke();
-    g.lineWidth = 2;
-    g.beginPath();
-    g.moveTo(124, 350);
-    g.bezierCurveTo(118, 280, 135, 240, 127, 194);
-    g.stroke();
-    // One irregular outline and pencil loops inside: recognisably a scribbled tree,
-    // with a quiet solid silhouette that remains readable from a distance.
-    const points = [];
-    for (let i = 0; i <= 64; i++) {
-      const a = (i / 64) * Math.PI * 2,
-        r = 1 + Math.sin(a * 7 + variant) * 0.05 + (random() - 0.5) * 0.025;
-      points.push([128 + Math.cos(a) * 101 * r, 133 + Math.sin(a) * 110 * r]);
-    }
-    g.beginPath();
-    points.forEach(([x, y], i) => (i ? g.lineTo(x, y) : g.moveTo(x, y)));
-    g.closePath();
-    g.fillStyle = fill;
-    g.fill();
-    g.strokeStyle = ink;
-    g.lineWidth = 4;
-    g.stroke();
-    g.save();
-    g.clip();
-    g.globalAlpha = 0.35;
-    g.lineWidth = 1.5;
-    for (let i = 0; i < 45; i++) {
-      const x = 30 + random() * 200,
-        y = 28 + random() * 205,
-        r = 7 + random() * 12;
-      g.beginPath();
-      g.ellipse(x, y, r, r * 0.65, random() * Math.PI, 0, Math.PI * 2.4);
-      g.stroke();
-    }
-    g.restore();
-    g.strokeStyle = ink;
-    g.globalAlpha = 0.35;
-    g.lineWidth = 1.3;
-    g.beginPath();
-    points.forEach(([x, y], i) =>
-      i ? g.lineTo(x + 3, y - 2) : g.moveTo(x + 3, y - 2),
-    );
-    g.stroke();
-    g.globalAlpha = 1;
-    return canvasTex(c, false);
-  }
   const trees = [],
     treeMats = [0, 1, 2, 3].map(
       (i) =>
@@ -574,33 +378,6 @@ export function startRoute(onExit) {
     sprite.scale.set(height * 0.67, height, 1);
     scene.add(sprite);
     trees.push({ sprite, x, z });
-  }
-  function flowerTexture() {
-    const c = mkCanvas(256, 256),
-      g = c.getContext("2d"),
-      random = mulberry32(91);
-    for (let i = 0; i < 13; i++) {
-      const x = 30 + random() * 196,
-        y = 30 + random() * 196;
-      g.strokeStyle = "#8ba578";
-      g.lineWidth = 2;
-      g.beginPath();
-      g.moveTo(x, y + 9);
-      g.lineTo(x, y - 5);
-      g.stroke();
-      g.fillStyle = ["#f2b5b7", "#e7cf81", "#c1b4dc"][i % 3];
-      for (let k = 0; k < 5; k++) {
-        const a = (k / 5) * Math.PI * 2;
-        g.beginPath();
-        g.arc(x + Math.cos(a) * 5, y + Math.sin(a) * 5, 4, 0, Math.PI * 2);
-        g.fill();
-      }
-      g.fillStyle = "#fff7d3";
-      g.beginPath();
-      g.arc(x, y, 2.5, 0, Math.PI * 2);
-      g.fill();
-    }
-    return canvasTex(c, false);
   }
   function scatterScenery() {
     const flowerMat = new THREE.MeshBasicMaterial({
@@ -666,83 +443,6 @@ export function startRoute(onExit) {
     }
   }
 
-  function cloudTexture(variant, frame) {
-    const W = 256,
-      H = 128,
-      c = mkCanvas(W, H),
-      g = c.getContext("2d");
-    const shape = mulberry32(variant * 97 + 3),
-      jit = mulberry32(variant * 1000 + frame * 31 + 7);
-    const circles = [],
-      n = 5 + Math.floor(shape() * 3);
-    for (let i = 0; i < n; i++)
-      circles.push({
-        x: 55 + shape() * 146,
-        y: 58 + shape() * 22,
-        r: 22 + shape() * 18,
-      });
-    const pts = circles.map((cc) => {
-      const arr = [];
-      for (let k = 0; k < 28; k++) {
-        const a = (k / 28) * Math.PI * 2,
-          r = cc.r * (1 + (jit() - 0.5) * 0.08);
-        arr.push([cc.x + Math.cos(a) * r, cc.y + Math.sin(a) * r]);
-      }
-      return arr;
-    });
-    const path = (arr) => {
-      g.beginPath();
-      arr.forEach(([x, y], i) => (i ? g.lineTo(x, y) : g.moveTo(x, y)));
-      g.closePath();
-    };
-    g.strokeStyle = LOOK.ink;
-    g.lineWidth = 7;
-    g.lineJoin = "round";
-    pts.forEach((a) => {
-      path(a);
-      g.stroke();
-    });
-    g.fillStyle = "#fffdf6";
-    pts.forEach((a) => {
-      path(a);
-      g.fill();
-    });
-    g.save();
-    g.beginPath();
-    pts.forEach((a) =>
-      a.forEach(([x, y], i) => (i ? g.lineTo(x, y) : g.moveTo(x, y))),
-    );
-    g.clip();
-    g.strokeStyle = "rgba(29,42,74,0.45)";
-    g.lineWidth = 1.6;
-    for (let x = -60; x < W; x += 7) {
-      g.beginPath();
-      g.moveTo(x + jit() * 2, H);
-      g.lineTo(x + 45, 78 + jit() * 4);
-      g.stroke();
-    }
-    g.restore();
-    return canvasTex(c, false);
-  }
-  function shadowTexture() {
-    const S = 128,
-      c = mkCanvas(S, S),
-      g = c.getContext("2d");
-    g.save();
-    g.beginPath();
-    g.ellipse(64, 64, 58, 34, 0, 0, Math.PI * 2);
-    g.clip();
-    g.strokeStyle = "rgba(40,40,60,0.7)";
-    g.lineWidth = 2;
-    for (let x = -64; x < 192; x += 6) {
-      g.beginPath();
-      g.moveTo(x, 128);
-      g.lineTo(x + 64, 0);
-      g.stroke();
-    }
-    g.restore();
-    return canvasTex(c, false);
-  }
   function glowTexture() {
     const c = mkCanvas(128, 128),
       g = c.getContext("2d"),
@@ -857,7 +557,7 @@ export function startRoute(onExit) {
   scene.background = skyTex;
   const ground = new THREE.Mesh(
     new THREE.PlaneGeometry(6000, 6000),
-    new THREE.MeshBasicMaterial({ map: groundTexture() }),
+    new THREE.MeshBasicMaterial({ map: groundTexture(renderer.capabilities.getMaxAnisotropy()) }),
   );
   ground.rotation.x = -Math.PI / 2;
   scene.add(ground);
@@ -963,17 +663,7 @@ export function startRoute(onExit) {
 
   // ================== AVIÃO ==================
   function makePlane() {
-    const N = [0, 0, -1.6],
-      L = [-1.1, 0.06, 1.0],
-      R = [1.1, 0.06, 1.0],
-      C = [0, 0, 1.0],
-      K = [0, -0.35, 1.0];
-    const geo = new THREE.BufferGeometry();
-    geo.setAttribute(
-      "position",
-      new THREE.Float32BufferAttribute([N, C, L, N, R, C, N, K, C].flat(), 3),
-    );
-    geo.computeVertexNormals();
+    const geo = paperPlaneGeometry();
     const mesh = new THREE.Mesh(geo, hatchMat("#ffffff", THREE.DoubleSide));
     const outline = new LineSegments2(
       new LineSegmentsGeometry().fromEdgesGeometry(

@@ -1,85 +1,79 @@
 import * as T from "three";
-export function plane(color = 0xfff8dc) {
-  const group = new T.Group(),
-    g = new T.BufferGeometry();
+import { LineSegments2 } from "three/addons/lines/LineSegments2.js";
+import { LineSegmentsGeometry } from "three/addons/lines/LineSegmentsGeometry.js";
+import { LineMaterial } from "three/addons/lines/LineMaterial.js";
+import { LOOK, paperMaterial, PAPER } from "./theme.js";
+export function paperPlaneGeometry() {
+  const g = new T.BufferGeometry(),
+    N = [0, 0, -1.6],
+    L = [-1.1, 0.06, 1],
+    R = [1.1, 0.06, 1],
+    C = [0, 0, 1],
+    K = [0, -0.35, 1];
   g.setAttribute(
     "position",
-    new T.Float32BufferAttribute(
-      [0, 0, -2, -2.6, 0, 1.5, 0, 0.45, 1, 0, 0, -2, 0, 0.45, 1, 2.6, 0, 1.5],
-      3,
-    ),
+    new T.Float32BufferAttribute([N, C, L, N, R, C, N, K, C].flat(), 3),
   );
   g.computeVertexNormals();
-  group.add(
-    new T.Mesh(
-      g,
-      new T.MeshStandardMaterial({ color, side: T.DoubleSide, roughness: 1 }),
-    ),
+  return g;
+}
+export function plane(color = 0xffffff) {
+  const group = new T.Group(),
+    g = paperPlaneGeometry();
+  group.add(new T.Mesh(g, paperMaterial(color)));
+  const ink = new LineMaterial({ color: LOOK.ink, linewidth: 3 });
+  ink.resolution.set(innerWidth, innerHeight);
+  const outline = new LineSegments2(
+    new LineSegmentsGeometry().fromEdgesGeometry(new T.EdgesGeometry(g, 1)),
+    ink,
   );
-  group.add(
-    new T.LineSegments(
-      new T.EdgesGeometry(g),
-      new T.LineBasicMaterial({ color: 0x52676a }),
-    ),
-  );
+  group.add(outline);
+  group.userData.outline = outline;
+  group.userData.lineMaterial = ink;
   return group;
 }
-export function scribbleTexture() {
-  const c = document.createElement("canvas");
-  c.width = 256;
-  c.height = 384;
-  const x = c.getContext("2d");
-  x.lineCap = "round";
-  x.strokeStyle = "#677b62";
-  x.lineWidth = 5;
-  x.beginPath();
-  x.moveTo(128, 376);
-  x.bezierCurveTo(119, 295, 141, 216, 125, 125);
-  x.stroke();
-  x.fillStyle = "#add397";
-  x.beginPath();
-  x.ellipse(129, 143, 91, 122, 0, 0, 7);
-  x.fill();
-  x.strokeStyle = "#66936c";
-  x.lineWidth = 2.4;
-  for (let i = 0; i < 9; i++) {
-    x.beginPath();
-    for (let j = 0; j < 65; j++) {
-      const a = (j / 64) * Math.PI * 2,
-        r = 1 + Math.sin(j * 1.7 + i) * 0.09,
-        px = 128 + Math.cos(a) * r * (76 + (i % 5) * 3),
-        py = 141 + Math.sin(a) * r * (102 + (i % 4) * 4);
-      j ? x.lineTo(px, py) : x.moveTo(px, py);
-    }
-    x.stroke();
-  }
-  return new T.CanvasTexture(c);
-}
 export function terrainMaterial(quality = "high") {
-  const m = new T.MeshStandardMaterial({ vertexColors: true, roughness: 1 });
+  const m = paperMaterial("#f6f5de", { vertexColors: true });
   m.userData.quality = quality;
   m.customProgramCacheKey = () => m.userData.quality;
+  const compile = m.onBeforeCompile;
   m.onBeforeCompile = (s) => {
-    s.defines.LIGHT_HATCH = m.userData.quality === "low" ? 0 : 1;
-    s.vertexShader = s.vertexShader
-      .replace(
-        "#include <common>",
-        "#include <common>\nvarying vec3 vPaper;varying float vSlope;",
-      )
-      .replace(
-        "#include <begin_vertex>",
-        "#include <begin_vertex>\nvPaper=position;vSlope=1.-abs(normal.y);",
-      );
-    s.fragmentShader = s.fragmentShader
-      .replace(
-        "#include <common>",
-        "#include <common>\nvarying vec3 vPaper;varying float vSlope;",
-      )
-      .replace(
-        "#include <color_fragment>",
-        `#include <color_fragment>
- float contour=abs(fract(vPaper.y/10.)-.5);float line=1.-smoothstep(.012,.045,contour);float steep=vSlope;float hatch=step(.86,fract((gl_FragCoord.x+gl_FragCoord.y)/9.));diffuseColor.rgb*=1.-line*.11*(1.-smoothstep(130.,220.,distance(cameraPosition,vPaper)))-hatch*steep*.13*float(LIGHT_HATCH);diffuseColor.rgb=mix(diffuseColor.rgb,vec3(.96,.97,.91),smoothstep(330.,400.,vPaper.y));`,
-      );
+    compile(s);
+    s.fragmentShader = s.fragmentShader.replace(
+      "#include <color_fragment>",
+      `#include <color_fragment>
+ float contour=abs(fract(paperP.y/10.)-.5);float mark=(1.-smoothstep(.015,.07,contour))*(1.-smoothstep(130.,220.,distance(cameraPosition,paperP)));diffuseColor.rgb=mix(diffuseColor.rgb,vec3(.92,.95,.88),.28);diffuseColor.rgb*=1.-mark*.09;diffuseColor.rgb=mix(diffuseColor.rgb,vec3(.98,.97,.91),smoothstep(330.,400.,paperP.y));`,
+    );
   };
   return m;
+}
+export function pickupTexture() {
+  const c = document.createElement("canvas");
+  c.width = 128;
+  c.height = 256;
+  const x = c.getContext("2d");
+  x.fillStyle = "#fff3c7";
+  x.strokeStyle = "#9e8652";
+  x.lineWidth = 3;
+  x.beginPath();
+  x.moveTo(64, 225);
+  x.bezierCurveTo(4, 155, 20, 40, 74, 18);
+  x.bezierCurveTo(121, 85, 105, 167, 64, 225);
+  x.fill();
+  x.stroke();
+  x.beginPath();
+  x.moveTo(54, 246);
+  x.lineTo(78, 39);
+  x.stroke();
+  for (let y = 55; y < 210; y += 17) {
+    x.beginPath();
+    x.moveTo(68, y + 15);
+    x.lineTo(35, y - 5);
+    x.moveTo(68, y + 15);
+    x.lineTo(95, y - 1);
+    x.stroke();
+  }
+  const t = new T.CanvasTexture(c);
+  t.colorSpace = T.SRGBColorSpace;
+  return t;
 }

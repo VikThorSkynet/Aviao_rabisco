@@ -388,3 +388,108 @@ canvas {
   border-radius: 34px 17px 32px 20px;
   box-shadow: 0 8px 40px #9eae8f0c;
 }
+:root {
+  --font-hand: "Comic Sans MS", "Segoe Print", "Chalkboard SE", cursive;
+  --ink: #40515b;
+  --paper: #fff8e8;
+  --accent: #d77c62;
+  --blue: #4c8897;
+  font-family: var(--font-hand);
+}
+.free-ui,
+.free-ui button,
+.free-ui .instruments strong,
+.map-panel h2,
+.map-panel h3,
+.menu h1,
+.menu p,
+.choices b,
+.choices span,
+.seed-label,
+.small-actions button {
+  font-family: var(--font-hand);
+}
+.free-ui {
+  color: var(--ink);
+  font-size: 16px;
+}
+.instruments,
+.map-panel,
+#freeHelp {
+  background: rgba(255, 252, 240, 0.94);
+  border: 1.5px solid #657c76;
+  border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+  box-shadow: 2px 3px 0 #566d5f10;
+}
+.instruments {
+  transform: rotate(-1deg);
+}
+.instruments:before,
+.map-panel:before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  width: 48px;
+  height: 15px;
+  margin-left: -24px;
+  background: #ecdfa78c;
+  transform: rotate(3deg);
+}
+.instruments strong {
+  color: #bf765a;
+}
+.free-ui button {
+  border: 1.5px solid #acc0ad;
+  background: #fffcf0e8;
+  border-radius: 18px 8px 17px 9px;
+  color: #658572;
+}
+.map-panel {
+  background-color: #fffcf0;
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent 0 31px,
+    #a6c3d01a 31px 32px
+  );
+}
+.map-panel canvas {
+  border: 1px dashed #9eb39b;
+}
+.toast {
+  font: 19px var(--font-hand);
+  color: #568b6f;
+  background: #fffcf0e8;
+}
+.hint {
+  font-family: var(--font-hand);
+}
+.free-ui:after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 70%, #6c917912);
+  mix-blend-mode: multiply;
+}
+.menu h1 {
+  color: #bb7557;
+}
+.choices button {
+  transform: rotate(-0.6deg);
+}
+.choices button + button {
+  transform: rotate(0.5deg);
+}
+.charge {
+  background: #b8cdbf88;
+}
+.charge i {
+  background: #94b891;
+}
+.wind {
+  color: #607f6b;
+}
+.top-actions {
+  z-index: 3;
+}

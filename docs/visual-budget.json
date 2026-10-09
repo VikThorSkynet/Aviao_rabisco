@@ -1,0 +1,35 @@
+{
+  "environment": "Edge headless / SwiftShader, seed jardim-dos-ventos, frame após carregamento e pausa, não benchmark de fps físico",
+  "date": "2026-10-09",
+  "metrics": {
+    "before-high": {
+      "calls": 107,
+      "triangles": 29851,
+      "geometries": 126,
+      "chunks": 49
+    },
+    "before-low": {
+      "calls": 38,
+      "triangles": 12850,
+      "geometries": 37,
+      "chunks": 25
+    },
+    "after-high": {
+      "calls": 125,
+      "triangles": 25661,
+      "geometries": 113,
+      "chunks": 49
+    },
+    "after-low": {
+      "calls": 46,
+      "triangles": 10435,
+      "geometries": 49,
+      "chunks": 25
+    }
+  },
+  "stable_geometries_three_cycles": [
+    290,
+    290,
+    290
+  ]
+}

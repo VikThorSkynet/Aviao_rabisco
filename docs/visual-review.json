@@ -1,0 +1,111 @@
+{
+  "desktop": {
+    "seed": "jardim-dos-ventos",
+    "viewport": "1365x768",
+    "quality": "high",
+    "scenes": [
+      "start",
+      "forest",
+      "waterfall",
+      "village",
+      "map",
+      "night"
+    ],
+    "stats": [
+      {
+        "calls": 124,
+        "triangles": 25661,
+        "geometries": 114,
+        "chunks": 49
+      },
+      {
+        "calls": 193,
+        "triangles": 27106,
+        "geometries": 237,
+        "chunks": 49
+      },
+      {
+        "calls": 152,
+        "triangles": 25758,
+        "geometries": 272,
+        "chunks": 49
+      },
+      {
+        "calls": 136,
+        "triangles": 23500,
+        "geometries": 315,
+        "chunks": 49
+      },
+      {
+        "calls": 130,
+        "triangles": 23386,
+        "geometries": 315,
+        "chunks": 49
+      },
+      {
+        "calls": 128,
+        "triangles": 23374,
+        "geometries": 315,
+        "chunks": 49
+      }
+    ],
+    "errors": []
+  },
+  "mobile": {
+    "seed": "jardim-dos-ventos",
+    "viewport": "390x844",
+    "quality": "low",
+    "scenes": [
+      "start",
+      "forest",
+      "waterfall",
+      "village",
+      "map",
+      "night"
+    ],
+    "stats": [
+      {
+        "calls": 52,
+        "triangles": 10870,
+        "geometries": 48,
+        "chunks": 25
+      },
+      {
+        "calls": 66,
+        "triangles": 11200,
+        "geometries": 116,
+        "chunks": 25
+      },
+      {
+        "calls": 59,
+        "triangles": 11480,
+        "geometries": 133,
+        "chunks": 25
+      },
+      {
+        "calls": 45,
+        "triangles": 9796,
+        "geometries": 195,
+        "chunks": 25
+      },
+      {
+        "calls": 45,
+        "triangles": 9835,
+        "geometries": 195,
+        "chunks": 25
+      },
+      {
+        "calls": 45,
+        "triangles": 9835,
+        "geometries": 195,
+        "chunks": 25
+      }
+    ],
+    "errors": []
+  },
+  "environment": {
+    "browser": "msedge",
+    "softwareGPU": true,
+    "version": "3.0.0"
+  }
+}

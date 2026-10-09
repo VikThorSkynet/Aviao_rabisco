@@ -74,4 +74,4 @@ Neblina esconde a fronteira carregada. O material do terreno aplica curvas de n�
 
 Vite gera IIFE a partir de `src/main.js`. `scripts/portable.mjs` reúne JS e CSS em `dist/game3.html`; `scripts/release.mjs` copia a distribuição para a raiz.
 
-A Rota compartilha a dependência Three.js no bundle, mas sua física e shaders ainda não foram extraídos para módulos comuns. Isso é uma evolução possível, não uma refatoração concluída.
+A Rota e o Livre compartilham LOOK, desenhos de canvas e geometria do avião em render/theme.js, render/paper-art.js e render/assets.js. A física e os shaders históricos da Rota continuam isolados. O Livre usa material de papel/hachura e atlas de árvores; ver VALIDACAO_VISUAL.md.

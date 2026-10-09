@@ -95,5 +95,18 @@
       "src/render/assets.js",
       "src/style.css"
     ]
+  },
+  {
+    "id": "D009",
+    "date": "2026-10-09",
+    "status": "accepted",
+    "decision": "Compartilhar LOOK, texturas canvas e geometria do avião entre Rota e Livre; preservar física, geração e IDs.",
+    "rationale": "Implementação gráfica da issue #1 usa a linguagem da Rota. Tipografia usa pilha de fontes do sistema explícita e offline. Materiais do Livre estilizados e contorno seletivo para manter orçamento gráfico.",
+    "references": [
+      "src/render/theme.js",
+      "src/render/paper-art.js",
+      "src/render/assets.js",
+      "docs/VALIDACAO_VISUAL.md"
+    ]
   }
 ]

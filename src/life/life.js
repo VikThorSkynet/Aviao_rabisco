@@ -1,3 +1,4 @@
+import { paperMaterial } from "../render/theme.js";
 import * as T from "three";
 import { random } from "../shared/math.js";
 export class Life {
@@ -90,7 +91,7 @@ export class Life {
     for (const lake of world.lakes.slice(-2)) {
       const b = new T.Mesh(
         new T.ConeGeometry(3, 1.5, 3),
-        new T.MeshStandardMaterial({ color: 0xfff0cf, flatShading: true }),
+        paperMaterial(0xfff0cf),
       );
       b.position.set(lake.x + lake.r * 0.4, lake.y + 1, lake.z);
       scene.add(b);
@@ -98,6 +99,7 @@ export class Life {
     }
   }
   update(p, time, w, dt, thermals) {
+    this.margins.visible = Math.max(Math.abs(p.x), Math.abs(p.z)) > 1800;
     this.stars.position.set(p.x, 0, p.z);
     this.stars.material.opacity = Math.max(0, 1 - w.sun * 5) * 0.8;
     this.rain.visible = w.rain > 0.08;

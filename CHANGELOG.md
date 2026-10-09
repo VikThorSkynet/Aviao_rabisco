@@ -1,5 +1,11 @@
 # Histórico
 
+## Fidelidade visual entre os modos — 2026-10-09
+
+- Implementação da issue #1: tema de papel e rabisco compartilhado, céu ilustrado, quatro variantes de árvores, avião/dobras, nuvens, coletáveis desenhados e cartões.
+- Capturas desktop/móvel, runners Playwright e comparação de custo.
+- Física, gerador e IDs preservados.
+
 ## Atualizações de documentação — 2026-10-08
 
 - Mapeamento visual da Rota e critérios de alinhamento do Livre, também publicados na issue #1.

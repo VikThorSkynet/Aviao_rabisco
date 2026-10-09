@@ -1,20 +1,34 @@
+import {
+  treeTexture,
+  skyTexture,
+  cloudTexture,
+  shadowTexture,
+  flowerTexture,
+} from "./paper-art.js";
+import { paperMaterial, PAPER, LOOK } from "./theme.js";
 import * as T from "three";
-import { plane, scribbleTexture, terrainMaterial } from "./assets.js";
+import { plane, pickupTexture, terrainMaterial } from "./assets.js";
 import { updateFlock } from "../life/flock.js";
 import { Life } from "../life/life.js";
 import { CFG_FREE as C } from "../config.js";
 export class WorldView {
   constructor(world, settings) {
     this.world = world;
+    this.settings = settings;
+    this.skyDay = skyTexture();
+    this.skyNight = new T.CanvasTexture(this.nightCanvas(this.skyDay.image));
+    this.skyNight.colorSpace = T.SRGBColorSpace;
+    this.skyMix = -1;
+    this.inkObjects = [];
     this.scene = new T.Scene();
-    this.scene.background = new T.Color("#eaf4df");
+    this.scene.background = this.skyDay;
     this.scene.fog = new T.Fog(
       "#eaf4df",
       settings.quality === "low" ? 100 : 160,
       settings.quality === "low" ? 280 : 390,
     );
     this.camera = new T.PerspectiveCamera(
-      62,
+      65,
       innerWidth / innerHeight,
       0.2,
       1500,
@@ -41,7 +55,7 @@ export class WorldView {
     this.pickups = [];
     this.clouds = [];
     const treeMat = new T.MeshBasicMaterial({
-      map: scribbleTexture(),
+      map: this.treeAtlas(),
       transparent: true,
       alphaTest: 0.1,
       side: T.DoubleSide,
@@ -51,36 +65,91 @@ export class WorldView {
     treeMat.onBeforeCompile = (shader) => {
       shader.uniforms.uSway = this.sway;
       shader.vertexShader = shader.vertexShader
-        .replace("#include <common>", "#include <common>\nuniform float uSway;")
+        .replace(
+          "#include <common>",
+          "#include <common>\nuniform float uSway;attribute float treeVariant;varying float vVariant;",
+        )
         .replace(
           "#include <begin_vertex>",
-          "#include <begin_vertex>\ntransformed.x+=sin(uSway+instanceMatrix[3].x*.1)*.025*(position.y+.5);",
+          "#include <begin_vertex>\nvVariant=treeVariant;transformed.x+=sin(uSway+instanceMatrix[3].x*.1)*.025*(position.y+.5);",
+        );
+      shader.fragmentShader = shader.fragmentShader
+        .replace(
+          "#include <common>",
+          "#include <common>\nvarying float vVariant;",
+        )
+        .replace(
+          "#include <map_fragment>",
+          "#ifdef USE_MAP\nvec4 sampledDiffuseColor=texture2D(map,vec2((vMapUv.x+vVariant)/4.,vMapUv.y));diffuseColor*=sampledDiffuseColor;\n#endif",
         );
     };
     this.trees = new T.InstancedMesh(new T.PlaneGeometry(1, 1), treeMat, 2400);
+    this.trees.geometry.setAttribute(
+      "treeVariant",
+      new T.InstancedBufferAttribute(new Float32Array(2400), 1),
+    );
     this.trees.count = 0;
     this.trees.frustumCulled = false;
     this.scene.add(this.trees);
     this.rocks = new T.InstancedMesh(
       new T.DodecahedronGeometry(1, 0),
-      new T.MeshStandardMaterial({ color: 0xaab2a4, flatShading: true }),
+      paperMaterial(0xaab2a4),
       400,
     );
     this.rocks.count = 0;
     this.rocks.frustumCulled = false;
     this.scene.add(this.rocks);
     this.pickupMesh = new T.InstancedMesh(
-      new T.OctahedronGeometry(0.9),
-      new T.MeshStandardMaterial({
-        color: 0xe6bb64,
-        emissive: 0x886125,
-        emissiveIntensity: 0.15,
+      new T.PlaneGeometry(1.8, 3),
+      new T.MeshBasicMaterial({
+        map: pickupTexture(),
+        transparent: true,
+        alphaTest: 0.1,
+        side: T.DoubleSide,
       }),
       300,
     );
     this.pickupMesh.count = 0;
     this.pickupMesh.frustumCulled = false;
     this.scene.add(this.pickupMesh);
+    this.shadow = new T.Mesh(
+      new T.PlaneGeometry(1, 1),
+      new T.MeshBasicMaterial({
+        map: shadowTexture(),
+        transparent: true,
+        depthWrite: false,
+      }),
+    );
+    this.shadow.rotation.x = -Math.PI / 2;
+    this.scene.add(this.shadow);
+    this.trailPoints = [];
+    this.trailGeometry = new T.BufferGeometry();
+    this.trailGeometry.setAttribute(
+      "position",
+      new T.BufferAttribute(new Float32Array(60), 3),
+    );
+    this.trail = new T.LineSegments(
+      this.trailGeometry,
+      new T.LineBasicMaterial({
+        color: "#92ad99",
+        transparent: true,
+        opacity: 0.24,
+      }),
+    );
+    this.trail.frustumCulled = false;
+    this.scene.add(this.trail);
+    this.flowers = new T.InstancedMesh(
+      new T.PlaneGeometry(7, 7),
+      new T.MeshBasicMaterial({
+        map: flowerTexture(),
+        transparent: true,
+        depthWrite: false,
+      }),
+      80,
+    );
+    this.flowers.count = 0;
+    this.flowers.frustumCulled = false;
+    this.scene.add(this.flowers);
     this.makeWater();
     this.makeSpecials();
     this.makeLife(settings);
@@ -91,9 +160,51 @@ export class WorldView {
       this.renderer.setSize(innerWidth, innerHeight);
     });
   }
+  treeAtlas() {
+    const c = document.createElement("canvas");
+    c.width = 1024;
+    c.height = 384;
+    const ctx = c.getContext("2d");
+    for (let i = 0; i < 4; i++) ctx.drawImage(treeTexture(i).image, i * 256, 0);
+    const t = new T.CanvasTexture(c);
+    t.colorSpace = T.SRGBColorSpace;
+    return t;
+  }
+  nightCanvas(image) {
+    const c = document.createElement("canvas");
+    c.width = image.width;
+    c.height = image.height;
+    const g = c.getContext("2d");
+    g.drawImage(image, 0, 0);
+    g.fillStyle = "#1b3459";
+    g.globalCompositeOperation = "multiply";
+    g.fillRect(0, 0, c.width, c.height);
+    return c;
+  }
+  updateTrail(p, time) {
+    if (
+      this.trailPoints.length &&
+      this.trailPoints.at(-1).distanceTo(new T.Vector3(p.x, p.y, p.z)) > 40
+    )
+      this.trailPoints = [];
+    if (!this.trailTime || time - this.trailTime > 0.08) {
+      this.trailTime = time;
+      this.trailPoints.push(new T.Vector3(p.x, p.y, p.z));
+      if (this.trailPoints.length > 11) this.trailPoints.shift();
+    }
+    const a = this.trailGeometry.attributes.position;
+    let n = 0;
+    for (let i = 1; i < this.trailPoints.length; i++) {
+      const p = this.trailPoints[i - 1],
+        q = this.trailPoints[i];
+      a.setXYZ(n++, p.x, p.y, p.z);
+      a.setXYZ(n++, q.x, q.y, q.z);
+    }
+    a.needsUpdate = true;
+    this.trailGeometry.setDrawRange(0, n);
+  }
   makeWater() {
-    const mat = new T.MeshStandardMaterial({
-      color: 0x79bdd0,
+    const mat = paperMaterial(0x79bdd0, {
       transparent: true,
       opacity: 0.8,
       roughness: 0.35,
@@ -170,15 +281,16 @@ export class WorldView {
       m.position.set(f.x, (f.top + f.bottom) / 2, f.z + 1);
       this.scene.add(m);
       const mist = new T.Mesh(
-        new T.SphereGeometry(f.width * 0.8, 12, 8),
+        new T.PlaneGeometry(f.width * 2, f.width),
         new T.MeshBasicMaterial({
+          map: cloudTexture(0, 0),
           color: 0xffffff,
           transparent: true,
           opacity: 0.2,
           depthWrite: false,
         }),
       );
-      mist.scale.y = 0.3;
+      mist.material.side = T.DoubleSide;
       mist.position.set(f.x, f.bottom + 2, f.z + 3);
       this.scene.add(mist);
       this.dynamic.push({ type: "mist", mesh: mist, base: f.bottom + 2 });
@@ -197,11 +309,18 @@ export class WorldView {
     }
   }
   mesh(geometry, color, x, y, z) {
-    const m = new T.Mesh(
-      geometry,
-      new T.MeshStandardMaterial({ color, roughness: 1, flatShading: true }),
-    );
+    const m = new T.Mesh(geometry, paperMaterial(color));
     m.position.set(x, y, z);
+    const outline = new T.LineSegments(
+      new T.EdgesGeometry(geometry, 25),
+      new T.LineBasicMaterial({
+        color: LOOK.ink,
+        transparent: true,
+        opacity: 0.65,
+      }),
+    );
+    m.add(outline);
+    this.inkObjects.push(m);
     this.scene.add(m);
     return m;
   }
@@ -302,17 +421,26 @@ export class WorldView {
   }
   rebuild(chunks, progress) {
     let ti = 0,
-      ri = 0;
+      ri = 0,
+      fi = 0;
     this.pickups = [];
     this.clouds = [];
     for (const c of chunks) {
       for (const t of c.trees) {
+        if (fi < 80 && Math.floor(t.x + t.z) % 7 === 0) {
+          this.dummy.position.set(t.x + 4, t.y + 0.12, t.z);
+          this.dummy.rotation.set(-Math.PI / 2, 0, 0);
+          this.dummy.scale.set(1, 1, 1);
+          this.dummy.updateMatrix();
+          this.flowers.setMatrixAt(fi++, this.dummy.matrix);
+        }
         for (let side = 0; side < 2; side++) {
           if (ti >= 2400) break;
           this.dummy.position.set(t.x, t.y + t.h / 2, t.z);
           this.dummy.scale.set(t.h * 0.65, t.h, 1);
           this.dummy.rotation.set(0, (side * Math.PI) / 2, 0);
           this.dummy.updateMatrix();
+          this.trees.geometry.attributes.treeVariant.setX(ti, t.color % 4);
           this.trees.setMatrixAt(ti++, this.dummy.matrix);
         }
       }
@@ -328,15 +456,23 @@ export class WorldView {
         if (!progress.collected.has(p.id)) this.pickups.push(p);
       for (const t of c.thermals) if (t.type === "thermal") this.clouds.push(t);
     }
+    this.flowers.count = fi;
+    this.flowers.instanceMatrix.needsUpdate = true;
     this.trees.count = ti;
     this.rocks.count = ri;
     this.trees.instanceMatrix.needsUpdate = true;
+    this.trees.geometry.attributes.treeVariant.needsUpdate = true;
     this.rocks.instanceMatrix.needsUpdate = true;
     for (const p of this.decor) {
       this.scene.remove(p);
+      for (const child of p.children) {
+        child.geometry?.dispose();
+        child.material?.dispose();
+      }
       p.geometry.dispose();
       p.material.dispose();
     }
+    this.inkObjects = this.inkObjects.filter((o) => o.parent);
     this.decor = [];
     for (const c of chunks)
       for (const p of c.props) {
@@ -381,9 +517,12 @@ export class WorldView {
       this.scene.add(b);
       this.birds.push(b);
     }
+    this.cloudFrames = [cloudTexture(1, 0), cloudTexture(1, 1)];
     this.cloudMesh = new T.InstancedMesh(
-      new T.SphereGeometry(1, 7, 5),
+      new T.PlaneGeometry(1, 1),
       new T.MeshBasicMaterial({
+        map: this.cloudFrames[0],
+        side: T.DoubleSide,
         color: 0xfffdf0,
         transparent: true,
         opacity: 0.62,
@@ -408,6 +547,10 @@ export class WorldView {
   }
   update(f, time, weather, dt) {
     const p = f.p;
+    for (const sky of [this.skyDay, this.skyNight]) {
+      sky.repeat.set(Math.min(1, innerWidth / innerHeight / 1.5), 1);
+      sky.offset.set((1 - sky.repeat.x) * 0.5, 0);
+    }
     this.sway.value = time * Math.hypot(weather.x, weather.z) * 0.15;
     this.player.position.set(p.x, p.y, p.z);
     this.player.rotation.set(f.pitch, p.yaw, -f.roll, "YXZ");
@@ -427,13 +570,29 @@ export class WorldView {
       p.y + 1,
       p.z - Math.cos(p.yaw) * 10,
     );
-    const daylight = 0.35 + weather.sun * 0.65;
-    this.scene.background.setRGB(
-      0.07 + weather.sun * 0.72,
-      0.12 + weather.sun * 0.76,
-      0.2 + weather.sun * 0.6,
+    for (const object of this.inkObjects)
+      if (object.children[0])
+        object.children[0].visible =
+          object.position.distanceTo(this.player.position) <
+          (this.settings.quality === "low" ? 80 : 140);
+    this.cloudMesh.material.map = this.cloudFrames[Math.floor(time * 5) % 2];
+    PAPER.time.value = time;
+    PAPER.day.value = Math.max(0.08, weather.sun);
+    PAPER.quality.value = this.settings.quality === "low" ? 0 : 1;
+    this.scene.background = weather.sun < 0.16 ? this.skyNight : this.skyDay;
+    this.scene.fog.color.set(weather.sun < 0.16 ? "#465b73" : LOOK.paper);
+    this.player.userData.lineMaterial.resolution.set(innerWidth, innerHeight);
+    this.player.userData.outline.position.x =
+      Math.sin(Math.floor(time * 5) * 17) * 0.008;
+    this.shadow.position.set(p.x, this.world.heightAt(p.x, p.z) + 0.15, p.z);
+    this.shadow.scale.setScalar(
+      3 + Math.min(100, p.y - this.shadow.position.y) * 0.035,
     );
-    this.scene.fog.color.copy(this.scene.background);
+    this.shadow.material.opacity = Math.max(
+      0.08,
+      0.5 - (p.y - this.shadow.position.y) * 0.004,
+    );
+    this.updateTrail(p, time);
     this.sun.intensity = 0.15 + weather.sun * 0.85;
     this.ambient.intensity = 0.25 + weather.sun * 1.4;
     this.life.update(p, time, weather, dt, this.clouds);
@@ -460,8 +619,8 @@ export class WorldView {
         t.y + 180,
         t.z + weather.z * 3,
       );
-      this.dummy.scale.set(16, 5, 10);
-      this.dummy.rotation.set(0, 0, 0);
+      this.dummy.scale.set(32, 16, 1);
+      this.dummy.quaternion.copy(this.camera.quaternion);
       this.dummy.updateMatrix();
       this.cloudMesh.setMatrixAt(count++, this.dummy.matrix);
     }
@@ -501,13 +660,18 @@ export class WorldView {
         item.y + Math.sin(time * 2 + item.x) * 0.5,
         item.z,
       );
-      this.dummy.rotation.set(0.3, time * 0.6, 0);
-      this.dummy.scale.set(item.type === "leaf" ? 0.6 : 1, 1.5, 0.3);
+      this.dummy.quaternion.copy(this.camera.quaternion);
+      this.dummy.rotateZ(Math.sin(time * 0.7 + item.x) * 0.15);
+      this.dummy.scale.set(
+        item.type === "leaf" ? 0.8 : 1,
+        item.type === "leaf" ? 0.8 : 1,
+        1,
+      );
       this.dummy.updateMatrix();
       this.pickupMesh.setMatrixAt(n, this.dummy.matrix);
       this.pickupMesh.setColorAt(
         n++,
-        new T.Color(item.type === "leaf" ? 0x9dbb6d : 0xe8b65b),
+        new T.Color(item.type === "leaf" ? 0xb2d6a4 : 0xffffff),
       );
     }
     this.pickupMesh.count = n;

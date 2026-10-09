@@ -50,7 +50,7 @@ Três ciclos de travessias por quatro regiões reportaram 279, 280 e 280 geometr
 | Água | Sem enchimento/transbordamento dinâmico |
 | Streaming | Água e alguns objetos são globais |
 | Álbum | Observação aproximada, sem oclusão completa |
-| UI automatizada | Runner portátil de navegador ainda não incluído |
+| UI automatizada | Runners test:browser e test:visual disponíveis; hardware físico ainda pendente |
 | Rota | Smoke de entrada; suíte Node não cobre toda geração/pontuação |
 | Migração | Sem exportação/importação no menu nem migrador v1→v2 |
 
@@ -59,3 +59,7 @@ Atualize memória e evidências ao resolver uma pendência; editar implementaç�
 ## Verificação da memória e documentação
 
 A suíte npm test também inclui quatro testes em tests/memory.test.js: rejeição de campos/tipos inválidos, datas impossíveis, referências inexistentes/externas e validação da memória real. Total na publicação inicial: dez testes aprovados. docs:check verifica existência de links locais; não testa âncoras ou destinos externos. memory:check verifica estrutura e referências, não a veracidade das afirmações.
+
+## Alinhamento visual — 2026-10-09
+
+Runners reproduzíveis e capturas comparativas adicionados. Resultados e limites: [VALIDACAO_VISUAL.md](VALIDACAO_VISUAL.md). Testes de navegador executados em Edge/SwiftShader; não certificar fps físico.

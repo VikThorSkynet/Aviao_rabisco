@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-10-08",
+  "updatedAt": "2026-10-09",
   "project": {
     "name": "Rabisco Planador",
     "version": "3.0.0",
@@ -94,38 +94,46 @@
     {
       "path": "src/shared/math.js",
       "role": "Hash, PRNG e simplex"
+    },
+    {
+      "path": "src/render/theme.js",
+      "role": "LOOK e materiais de papel compartilhados"
+    },
+    {
+      "path": "src/render/paper-art.js",
+      "role": "Desenhos canvas da Rota compartilhados com Livre"
     }
   ],
   "validation": [
     {
-      "date": "2026-10-08",
+      "date": "2026-10-09",
       "kind": "automated",
       "status": "passed",
-      "evidence": "npm test nesta publicação: 10 testes passaram (6 de mundo/voo e 4 de memória)."
+      "evidence": "npm test: dez testes passaram; física/gerador/IDs sem alterações nesta tarefa."
     },
     {
-      "date": "2026-10-08",
+      "date": "2026-10-09",
       "kind": "browser-emulated",
       "status": "passed",
-      "evidence": "Entrega anterior: Edge/SwiftShader, file://, Worker, mapa, save, Q, relançamento, Rota e toque 390x844; detalhes em docs/TESTES.md."
+      "evidence": "Edge/SwiftShader: gameplay, capturas desktop/móvel e noite sem erros; travessias três ciclos com 290/290/290 geometrias. Runners Playwright declarados e reproduzíveis."
     },
     {
-      "date": "2026-10-08",
+      "date": "2026-10-09",
       "kind": "documentation",
       "status": "passed",
-      "evidence": "Após política de commit e mapeamento visual: docs:check passou, 13 arquivos Markdown e 28 links locais válidos."
+      "evidence": "docs:check passou: 15 Markdown, 49 links locais válidos após entrega visual."
     },
     {
-      "date": "2026-10-08",
+      "date": "2026-10-09",
       "kind": "memory",
       "status": "passed",
-      "evidence": "Após política de commit e mapeamento visual: memory:check passou, schema v1, 16 componentes e 8 decisões válidos."
+      "evidence": "memory:check passou: schema v1, 18 componentes e 9 decisões."
     },
     {
-      "date": "2026-10-08",
+      "date": "2026-10-09",
       "kind": "build",
       "status": "passed",
-      "evidence": "npm run release: Vite compilou e atualizou game3.html da raiz."
+      "evidence": "npm run release: HTML portátil com tema compartilhado gerado e incluído na entrega aprovada."
     },
     {
       "date": "2026-10-08",
@@ -140,14 +148,11 @@
     "Parte de CFG_FREE tem equivalentes hardcoded; sensitivity ainda sem consumidor funcional.",
     "Sem costura geral de LOD; investigar transições 16/6.",
     "Água e alguns objetos globais não usam streaming; hidrologia sem enchimento dinâmico.",
-    "Runner de navegador portátil ainda não versionado; evidências anteriores são emulação.",
     "Álbum usa observação aproximada; desafio 300m soma ganhos positivos, não subida contínua do zero.",
     "Sem exportação/importação de saves no menu ou migração v1 para v2."
   ],
   "nextSteps": [
-    "Issue #1: alinhar graficamente o Livre à Rota conforme docs/ESTILO_VISUAL.md; mapeamento concluído, implementação visual pendente.",
     "Se solicitado, validar saves e simular falhas de localStorage.",
-    "Se solicitado, incluir runner de navegador portátil.",
     "Se solicitado, medir desempenho em hardware e investigar LOD."
   ],
   "references": [
@@ -163,6 +168,8 @@
     "docs/TESTES.md",
     ".memory/decisions.json",
     ".memory/journal/2026-10-08.md",
-    "docs/ESTILO_VISUAL.md"
+    "docs/ESTILO_VISUAL.md",
+    "docs/VALIDACAO_VISUAL.md",
+    ".memory/journal/2026-10-09.md"
   ]
 }

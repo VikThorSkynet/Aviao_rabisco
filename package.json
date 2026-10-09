@@ -9,12 +9,15 @@
     "test": "node --test tests/*.test.js",
     "docs:check": "node scripts/check-docs.mjs",
     "memory:check": "node scripts/check-memory.mjs",
-    "release": "npm run build && node scripts/release.mjs"
+    "release": "npm run build && node scripts/release.mjs",
+    "test:visual": "node scripts/visual-review.cjs",
+    "test:browser": "node scripts/gameplay-review.cjs"
   },
   "dependencies": {
     "three": "0.160.0"
   },
   "devDependencies": {
+    "playwright": "1.62.1",
     "vite": "8.3.4"
   }
 }

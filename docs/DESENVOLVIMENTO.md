@@ -53,8 +53,7 @@ Console deve ficar sem erros de JavaScript, Worker ou shader. Ao mudar ciclo de 
 
 ## Navegador e hardware
 
-O repositório não inclui o runner Playwright local original, que tinha caminhos específicos do computador de trabalho. O roteiro está em [TESTES.md](TESTES.md). Se acrescentar runner, use caminhos/URL configuráveis e declare dependências.
-
+Os runners Playwright reproduzíveis estão em scripts/gameplay-review.cjs e scripts/visual-review.cjs. Execute npm run test:browser e npm run test:visual após release; opções e capturas em [VALIDACAO_VISUAL.md](VALIDACAO_VISUAL.md).
 SwiftShader serve para verificar funcionamento e capturas, não para certificar fps em GPU de desktop ou celular físico.
 
 ## Áreas sensíveis
