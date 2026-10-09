@@ -21,13 +21,26 @@ export function windAt(world, chunks, p, time, w) {
     above = p.y - ground,
     n = world.windNormal(p.x, p.z),
     face = -(w.x * n.x + w.z * n.z);
-  let y = face * 1.2 * Math.exp(-Math.max(0, above) / 60),
+  const sources = {
+    ridge: face * 1.2 * Math.exp(-Math.max(0, above) / 60),
+    thermal: 0,
+    gust: 0,
+    wave: 0,
+    mist: 0,
+    geyser: 0,
+    balloon: 0,
+  };
+  let y = sources.ridge,
     thermal = null;
   for (const c of chunks.nearby(p.x, p.z))
     for (const t of c.thermals) {
       if (t.type === "gust") {
         const d = Math.hypot(p.x - t.x, p.z - t.z);
-        if (d < 110) y += Math.exp((-d * d) / 1200) * 2.5;
+        if (d < 110) {
+          const lift = Math.exp((-d * d) / 1200) * 2.5;
+          y += lift;
+          sources.gust += lift;
+        }
         continue;
       }
       const dx = p.x - t.x - w.x * above * 0.025,
@@ -42,29 +55,61 @@ export function windAt(world, chunks, p, time, w) {
           (1 - w.rain * 0.8) *
           clamp(1 - above / t.ceiling, 0, 1);
       y += lift;
+      sources.thermal += lift;
       if (lift > 1) thermal = t.id;
     }
-  if (ground > 250 && face < 0 && above > 60)
-    y += Math.sin((p.x * w.x + p.z * w.z) / 190) * 2.5 * Math.exp(-above / 400);
+  if (ground > 250 && face < 0 && above > 60) {
+    const lift =
+      Math.sin((p.x * w.x + p.z * w.z) / 190) * 2.5 * Math.exp(-above / 400);
+    y += lift;
+    sources.wave += lift;
+  }
   for (const f of world.falls) {
     const d = Math.hypot(p.x - f.x, p.z - f.z);
-    if (d < 30)
-      y += p.y < f.bottom + 12 ? 1.8 * (1 - d / 30) : -2 * (1 - d / 30);
+    if (d < 30) {
+      const lift = p.y < f.bottom + 12 ? 1.8 * (1 - d / 30) : -2 * (1 - d / 30);
+      y += lift;
+      sources.mist += lift;
+    }
   }
   for (const s of world.specials) {
     const d = Math.hypot(p.x - s.x, p.z - s.z);
     if (d < 20 && above < 110) {
-      if (s.type === "geyser")
-        y += Math.max(0, Math.sin(time * 0.3)) * 9 * Math.exp((-d * d) / 80);
-      if (s.type === "balloon" || s.type === "village")
-        y += 3 * Math.exp((-d * d) / 100);
+      if (s.type === "geyser") {
+        const lift =
+          Math.max(0, Math.sin(time * 0.3)) * 9 * Math.exp((-d * d) / 80);
+        y += lift;
+        sources.geyser += lift;
+      }
+      if (s.type === "balloon" || s.type === "village") {
+        const lift = 3 * Math.exp((-d * d) / 100);
+        y += lift;
+        sources.balloon += lift;
+      }
     }
   }
   const fan =
     Math.hypot(p.x - world.village.x, p.z - world.village.z) < 35 && above < 30
       ? 5
       : 0;
-  return { x: w.x + fan, z: w.z, y: clamp(y, -10, 14), thermal, ground, above };
+  let source = null,
+    strongest = 0;
+  for (const [name, lift] of Object.entries(sources)) {
+    const impact = lift * (y < 0 ? -1 : 1);
+    if (impact > strongest) {
+      strongest = impact;
+      source = name;
+    }
+  }
+  return {
+    x: w.x + fan,
+    z: w.z,
+    y: clamp(y, -10, 14),
+    thermal,
+    ground,
+    above,
+    source,
+  };
 }
 export class Flight {
   constructor(world, saved) {
@@ -186,26 +231,38 @@ export class Flight {
     }
     if (p.y < h + 0.65) {
       const normal = this.world.normalAt(p.x, p.z),
-        impact = Math.abs((dx / dt) * normal.x + this.vy * normal.y + (dz / dt) * normal.z);
+        impact = Math.abs(
+          (dx / dt) * normal.x + this.vy * normal.y + (dz / dt) * normal.z,
+        );
       if (impact < 5 && this.speed < 17 && normal.slope < 0.7) {
         p.y = h + 0.65;
         this.state = "grounded";
         this.safe = { ...p, y: p.y + 18 };
         this.flash = "Pouso suave! Segure espaço e solte para voar";
       } else if (impact < 3 && normal.slope < 1.2 && this.speed < 14) {
-        p.y = h + .7;
+        p.y = h + 0.7;
         p.x += normal.x * dt * 3;
         p.z += normal.z * dt * 3;
         this.speed = Math.max(4, this.speed - dt * 8);
       } else this.recover("Um amassadinho… e um novo voo");
     }
     for (const s of this.world.specials) {
-      if (Math.hypot(p.x-s.x,p.z-s.z)>70) continue;
-      if (s.type === 'bridge' && Math.abs(p.x-s.x)<32 && Math.abs(p.z-s.z)<3 && Math.abs(p.y-s.y)<1.2) {
-        this.recover('A régua ganhou esta… vamos de novo'); return;
+      if (Math.hypot(p.x - s.x, p.z - s.z) > 70) continue;
+      if (
+        s.type === "bridge" &&
+        Math.abs(p.x - s.x) < 32 &&
+        Math.abs(p.z - s.z) < 3 &&
+        Math.abs(p.y - s.y) < 1.2
+      ) {
+        this.recover("A régua ganhou esta… vamos de novo");
+        return;
       }
-      if (s.type === 'balloon' && Math.hypot((p.x-s.x)/9,(p.y-s.y-80)/12,(p.z-s.z)/9)<1) {
-        this.recover('Um encontro com o balão! Redobrando…'); return;
+      if (
+        s.type === "balloon" &&
+        Math.hypot((p.x - s.x) / 9, (p.y - s.y - 80) / 12, (p.z - s.z) / 9) < 1
+      ) {
+        this.recover("Um encontro com o balão! Redobrando…");
+        return;
       }
     }
     for (const c of chunks.nearby(p.x, p.z)) {

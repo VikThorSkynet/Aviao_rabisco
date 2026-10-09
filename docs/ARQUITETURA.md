@@ -31,6 +31,8 @@ index.html → src/main.js → menu
 | `src/life/flock.js` | Boids e quatro aviões NPC |
 | `src/life/life.js` | Chuva, estrelas, fumaça, respingos, margens e barcos |
 | `src/ui/progress.js` | Descobertas, figurinhas, desafios, recordes e saves |
+| `src/ui/navigation.js` | Bússola SVG e bandeira orientadas pelo avião/vento |
+| `src/ui/missions.js` | Destinos reais, distância e estado das missões |
 | `src/ui/map.js` | Mapa 2D com exploração e marcos |
 | `src/audio/sound.js` | Ruído sintetizado, PannerNode e tons |
 | `src/shared/math.js` | Hash, PRNG, simplex, interpolação e distância |

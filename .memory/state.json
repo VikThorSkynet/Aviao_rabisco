@@ -102,6 +102,26 @@
     {
       "path": "src/render/paper-art.js",
       "role": "Desenhos canvas da Rota compartilhados com Livre"
+    },
+    {
+      "path": "src/ui/navigation.js",
+      "role": "Bússola e bandeira com direção relativa ao avião"
+    },
+    {
+      "path": "src/ui/missions.js",
+      "role": "Destinos de missão sugeridos a partir do mundo real"
+    },
+    {
+      "path": "src/ui/soaring.js",
+      "role": "Explicação da corrente e direção relativa do vento"
+    },
+    {
+      "path": "src/world/day-cycle.js",
+      "role": "Pesos contínuos dos quatro períodos e relógio do mundo"
+    },
+    {
+      "path": "src/render/paper-sky.js",
+      "role": "Mistura GPU de céu diurno, tarde e noite"
     }
   ],
   "validation": [
@@ -109,31 +129,31 @@
       "date": "2026-10-09",
       "kind": "automated",
       "status": "passed",
-      "evidence": "npm test: dez testes passaram; física/gerador/IDs sem alterações nesta tarefa."
+      "evidence": "npm test: 19 testes passaram, incluindo dicas de vento e continuidade do ciclo."
     },
     {
       "date": "2026-10-09",
       "kind": "browser-emulated",
       "status": "passed",
-      "evidence": "Edge/SwiftShader: gameplay, capturas desktop/móvel e noite sem erros; travessias três ciclos com 290/290/290 geometrias. Runners Playwright declarados e reproduzíveis."
+      "evidence": "Edge/SwiftShader: navegação, quatro períodos e subida em térmica real, desktop 1365x768 e tarde móvel 390x844; capturas em docs/VENTO_E_CICLO.md."
     },
     {
       "date": "2026-10-09",
       "kind": "documentation",
       "status": "passed",
-      "evidence": "docs:check passou: 15 Markdown, 49 links locais válidos após entrega visual."
+      "evidence": "docs:check passou: 17 Markdown e 66 links locais após clareza do vento e ciclo."
     },
     {
       "date": "2026-10-09",
       "kind": "memory",
       "status": "passed",
-      "evidence": "memory:check passou: schema v1, 18 componentes e 9 decisões."
+      "evidence": "memory:check passou: schema v1, 23 componentes e 11 decisões."
     },
     {
       "date": "2026-10-09",
       "kind": "build",
       "status": "passed",
-      "evidence": "npm run release: HTML portátil com tema compartilhado gerado e incluído na entrega aprovada."
+      "evidence": "npm run release: HTML portátil com navegação, dicas e ciclo suave gerado e incluído na entrega aprovada."
     },
     {
       "date": "2026-10-08",
@@ -170,6 +190,8 @@
     ".memory/journal/2026-10-08.md",
     "docs/ESTILO_VISUAL.md",
     "docs/VALIDACAO_VISUAL.md",
-    ".memory/journal/2026-10-09.md"
+    ".memory/journal/2026-10-09.md",
+    "docs/NAVEGACAO_MISSOES.md",
+    "docs/VENTO_E_CICLO.md"
   ]
 }

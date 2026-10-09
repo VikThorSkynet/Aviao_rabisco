@@ -1,5 +1,19 @@
 # Histórico
 
+## Clareza do vento e tarde — 2026-10-09
+
+- Bandeira com seta e legendas cardinal/relativa.
+- Cartão de corrente, dicas de sustentação e setas verdes em térmicas próximas.
+- Manhã, dia, tarde e noite com céu, papel e neblina em mistura gradual.
+- Relógio estilizado e testes de continuidade; forças de voo preservadas.
+
+## Navegação e missões — 2026-10-09
+
+- Bússola temática e bandeira de vento abaixo do HUD do Livre, substituindo a marcação central.
+- Pins de missão, distância, direção, seleção e indicação de conclusão.
+- Vista focada na missão e alternância para o mundo inteiro.
+- Testes de ângulos, destinos e teclado; progresso e física preservados.
+
 ## Fidelidade visual entre os modos — 2026-10-09
 
 - Implementação da issue #1: tema de papel e rabisco compartilhado, céu ilustrado, quatro variantes de árvores, avião/dobras, nuvens, coletáveis desenhados e cartões.

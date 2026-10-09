@@ -11,7 +11,9 @@
     "memory:check": "node scripts/check-memory.mjs",
     "release": "npm run build && node scripts/release.mjs",
     "test:visual": "node scripts/visual-review.cjs",
-    "test:browser": "node scripts/gameplay-review.cjs"
+    "test:browser": "node scripts/gameplay-review.cjs",
+    "test:navigation": "node scripts/navigation-review.cjs",
+    "test:soaring": "node scripts/soaring-review.cjs"
   },
   "dependencies": {
     "three": "0.160.0"

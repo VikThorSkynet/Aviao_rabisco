@@ -77,3 +77,24 @@ export function pickupTexture() {
   t.colorSpace = T.SRGBColorSpace;
   return t;
 }
+
+export function liftArrowTexture() {
+  const c = document.createElement("canvas");
+  c.width = 64;
+  c.height = 96;
+  const g = c.getContext("2d");
+  g.strokeStyle = "#66916b";
+  g.lineWidth = 5;
+  g.lineCap = "round";
+  g.lineJoin = "round";
+  g.beginPath();
+  g.moveTo(32, 80);
+  g.lineTo(32, 18);
+  g.moveTo(15, 37);
+  g.lineTo(32, 18);
+  g.lineTo(49, 37);
+  g.stroke();
+  const texture = new T.CanvasTexture(c);
+  texture.colorSpace = T.SRGBColorSpace;
+  return texture;
+}

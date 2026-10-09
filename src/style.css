@@ -493,3 +493,424 @@ canvas {
 .top-actions {
   z-index: 3;
 }
+/* Small paper instruments attached directly below the flight HUD. */
+.hud-stack {
+  position: absolute;
+  top: 22px;
+  left: 24px;
+  width: 190px;
+  pointer-events: none;
+}
+.hud-stack .instruments {
+  position: relative;
+  top: auto;
+  left: auto;
+  width: 100%;
+  min-width: 0;
+  padding: 11px 14px;
+}
+.hud-stack .meter-row {
+  gap: 10px;
+  font-size: 13px;
+}
+.navigation-dock {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 13px;
+  padding: 0 5px;
+}
+.wind-sketch,
+.compass-sketch {
+  width: 76px;
+  text-align: center;
+  filter: drop-shadow(1px 2px 0 #566d5f0c);
+}
+.navigation-dock svg {
+  display: block;
+  width: 76px;
+  height: 76px;
+  overflow: visible;
+}
+.nav-caption {
+  display: block;
+  font-size: 12px;
+  white-space: nowrap;
+  color: #607f6b;
+  margin-top: 2px;
+}
+.compass-paper {
+  fill: #fff8e8f0;
+  stroke: #657c76;
+  stroke-width: 1.7;
+}
+.compass-ring {
+  fill: none;
+  stroke: #b9b18b;
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+}
+.compass-spokes {
+  stroke: #839783;
+  stroke-width: 0.8;
+  opacity: 0.4;
+}
+.compass-dial text {
+  text-anchor: middle;
+  font: 12px var(--font-hand);
+  fill: #40515b;
+}
+.compass-north {
+  fill: #d77c62;
+  stroke: #9b6658;
+  stroke-width: 0.7;
+}
+.compass-south {
+  fill: #acc4b2;
+  stroke: #657c76;
+  stroke-width: 0.7;
+}
+.compass-plane {
+  fill: #fff8e8;
+  stroke: #40515b;
+  stroke-width: 1.5;
+}
+.compass-pin {
+  fill: #b9a571;
+  stroke: #40515b;
+  stroke-width: 0.8;
+}
+.compass-dial,
+.wind-flag {
+  transform-box: view-box;
+  transform-origin: 50px 50px;
+  transition: transform 0.16s ease-out;
+}
+.wind-base,
+.wind-stroke {
+  fill: none;
+  stroke: #657c76;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+.wind-stroke {
+  stroke: #80a6b1;
+  stroke-width: 1;
+  opacity: 0.55;
+}
+.wind-pivot {
+  fill: #b9a571;
+  stroke: #657c76;
+  stroke-width: 1;
+}
+.flag-ribbon {
+  fill: #e6b08c;
+  stroke: #8b7860;
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+}
+.flag-stitch {
+  fill: none;
+  stroke: #fff8e8;
+  stroke-width: 3;
+}
+.wind-sketch.calm .wind-flag {
+  opacity: 0.35;
+}
+.map-sheet {
+  min-width: 0;
+}
+.map-key {
+  font-size: 12px !important;
+  text-align: center;
+  color: #7b8c74;
+}
+.mission-guidance {
+  border: 1px dashed #b9ab87;
+  border-radius: 12px 6px 13px 8px;
+  background: #fff4d68c;
+  padding: 12px 14px;
+  color: #53695d;
+}
+.mission-guidance b,
+.mission-guidance span {
+  display: block;
+}
+.mission-guidance span {
+  font-size: 13px;
+  color: #b07854;
+  margin-top: 4px;
+}
+.mission-guidance p {
+  margin: 8px 0;
+  font-size: 13px;
+  color: #687d68;
+}
+.mission-guidance small {
+  font-size: 11px;
+  color: #82907a;
+}
+.mission-list {
+  display: grid;
+  gap: 8px;
+}
+.free-ui .mission-choice {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  text-align: left;
+  border-color: #c4cbb1;
+  padding: 10px;
+  background: #fffdf2;
+}
+.mission-choice b,
+.mission-choice small {
+  display: block;
+}
+.mission-choice b {
+  font-size: 14px;
+  font-weight: normal;
+}
+.mission-choice small {
+  font-size: 11px;
+  color: #7d8f77;
+  margin-top: 3px;
+}
+.mission-badge {
+  display: grid;
+  place-items: center;
+  flex: 0 0 25px;
+  width: 25px;
+  height: 25px;
+  border: 1px solid #b8a67d;
+  border-radius: 50%;
+  background: #fff2cf;
+  color: #a67555;
+}
+.free-ui .mission-choice.selected {
+  border-color: #bd896b;
+  background: #fff0d5;
+  box-shadow: 1px 2px 0 #bb75571a;
+}
+.mission-choice.completed .mission-badge {
+  color: #607f6b;
+  background: #dce9d6;
+  border-color: #99b098;
+}
+.mission-choice:focus-visible {
+  outline: 2px solid #bc9367;
+  outline-offset: 2px;
+}
+@media (max-width: 650px) {
+  .hud-stack {
+    left: 10px;
+    top: 15px;
+    width: 162px;
+  }
+  .hud-stack .instruments {
+    padding: 9px 10px;
+  }
+  .hud-stack .instruments strong {
+    font-size: 28px;
+  }
+  .hud-stack .instruments small {
+    font-size: 10px;
+  }
+  .hud-stack .meter-row {
+    font-size: 11px;
+    gap: 8px;
+  }
+  .navigation-dock {
+    gap: 8px;
+    margin-top: 12px;
+    padding: 0 2px;
+  }
+  .navigation-dock svg {
+    width: 64px;
+    height: 64px;
+  }
+  .wind-sketch,
+  .compass-sketch {
+    width: 64px;
+  }
+  .nav-caption {
+    font-size: 11px;
+  }
+  .top-actions {
+    gap: 5px;
+    right: 10px;
+  }
+  .top-actions button {
+    padding: 8px 10px;
+    font-size: 11px;
+  }
+  .map-panel .map-close {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+  }
+  .mission-guidance {
+    padding: 10px;
+  }
+  .map-layout {
+    gap: 15px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .compass-dial,
+  .wind-flag {
+    transition: none;
+  }
+}
+.map-panel {
+  z-index: 10;
+}
+
+.free-ui .map-view-toggle {
+  display: block;
+  margin: 9px auto 4px;
+  padding: 5px 14px;
+  font-size: 12px;
+  border-style: dashed;
+  background: #fffcf0;
+}
+.wind-arrow {
+  stroke: #4c8897;
+  stroke-width: 3;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.wind-direction,
+.wind-relative {
+  display: block;
+  font: 10px var(--font-hand);
+  line-height: 1.4;
+  white-space: nowrap;
+  color: #53695e;
+}
+.wind-direction {
+  font-weight: bold;
+}
+.wind-relative {
+  color: #8e7856;
+}
+.lift-cue {
+  margin-top: 10px;
+  padding: 8px 10px;
+  border: 1px dashed #a7b49a;
+  border-radius: 13px 5px 14px 6px;
+  background: #fffcf0de;
+  color: #617861;
+}
+.lift-cue b,
+.lift-cue span {
+  display: block;
+}
+.lift-cue b {
+  font-size: 12px;
+  font-weight: normal;
+}
+.lift-cue span {
+  font-size: 11px;
+  line-height: 1.4;
+  margin-top: 4px;
+  color: #7b8e74;
+}
+.lift-cue[data-kind="lift"] {
+  border-color: #77a572;
+  background: #edf5dfed;
+}
+.lift-cue[data-kind="sink"] {
+  border-color: #c1937a;
+  background: #fff0dfed;
+}
+.lift-cue[data-kind="potential"] {
+  border-color: #b5ab69;
+}
+.day-period {
+  text-align: right;
+  font-size: 11px;
+  color: #7d8977;
+  margin-top: 6px;
+  padding-right: 4px;
+}
+@media (max-width: 650px) {
+  .wind-direction,
+  .wind-relative {
+    font-size: 9px;
+  }
+  .lift-cue {
+    padding: 6px 8px;
+  }
+  .lift-cue b {
+    font-size: 11px;
+  }
+  .lift-cue span {
+    font-size: 10px;
+  }
+  .day-period {
+    font-size: 10px;
+  }
+}
+.wind-sketch {
+  background: #fff8e8e3;
+  border: 1px dashed #b5b7a0;
+  border-radius: 17px 7px 13px 8px;
+  padding: 3px 0;
+}
+.wind-sketch svg {
+  width: 100%;
+}
+.nav-caption {
+  background: #fff8e8e8;
+  border-radius: 5px;
+  padding: 1px 3px;
+  display: table;
+  margin: 3px auto;
+}
+.day-period {
+  display: table;
+  margin-left: auto;
+  background: #fff8e8e8;
+  border-radius: 5px;
+  padding: 2px 6px;
+  color: #607f6b;
+}
+.navigation-dock {
+  gap: 8px;
+  padding: 0;
+}
+.wind-sketch {
+  width: 96px;
+}
+.wind-direction,
+.wind-relative {
+  white-space: normal;
+  text-align: center;
+  padding: 0 3px;
+}
+#freeHelp {
+  position: relative;
+  z-index: 11;
+  max-height: 80vh;
+  overflow: auto;
+  margin: 10vh auto;
+  width: min(500px, calc(100vw - 24px));
+}
+#closeHelp {
+  position: sticky;
+  bottom: 0;
+  background: #e3edcf;
+}
+@media (max-width: 650px) {
+  .wind-sketch {
+    width: 88px;
+  }
+  .wind-direction,
+  .wind-relative {
+    font-size: 10px;
+  }
+}

@@ -1,13 +1,19 @@
+import { PaperSky } from "./paper-sky.js";
+import { dayCycle } from "../world/day-cycle.js";
 import {
   treeTexture,
-  skyTexture,
   cloudTexture,
   shadowTexture,
   flowerTexture,
 } from "./paper-art.js";
 import { paperMaterial, PAPER, LOOK } from "./theme.js";
 import * as T from "three";
-import { plane, pickupTexture, terrainMaterial } from "./assets.js";
+import {
+  plane,
+  pickupTexture,
+  terrainMaterial,
+  liftArrowTexture,
+} from "./assets.js";
 import { updateFlock } from "../life/flock.js";
 import { Life } from "../life/life.js";
 import { CFG_FREE as C } from "../config.js";
@@ -15,13 +21,17 @@ export class WorldView {
   constructor(world, settings) {
     this.world = world;
     this.settings = settings;
-    this.skyDay = skyTexture();
-    this.skyNight = new T.CanvasTexture(this.nightCanvas(this.skyDay.image));
-    this.skyNight.colorSpace = T.SRGBColorSpace;
-    this.skyMix = -1;
     this.inkObjects = [];
+    this.hintLift = new Map();
     this.scene = new T.Scene();
-    this.scene.background = this.skyDay;
+    this.scene.background = null;
+    this.sky = new PaperSky(this.scene);
+    this.palette = {
+      morning: new T.Color("#f8efd9"),
+      day: new T.Color(LOOK.paper),
+      afternoon: new T.Color("#efcbb8"),
+      night: new T.Color("#465b73"),
+    };
     this.scene.fog = new T.Fog(
       "#eaf4df",
       settings.quality === "low" ? 100 : 160,
@@ -169,17 +179,6 @@ export class WorldView {
     const t = new T.CanvasTexture(c);
     t.colorSpace = T.SRGBColorSpace;
     return t;
-  }
-  nightCanvas(image) {
-    const c = document.createElement("canvas");
-    c.width = image.width;
-    c.height = image.height;
-    const g = c.getContext("2d");
-    g.drawImage(image, 0, 0);
-    g.fillStyle = "#1b3459";
-    g.globalCompositeOperation = "multiply";
-    g.fillRect(0, 0, c.width, c.height);
-    return c;
   }
   updateTrail(p, time) {
     if (
@@ -420,6 +419,7 @@ export class WorldView {
     this.mesh(new T.TorusGeometry(6, 1.5, 6, 12), 0xa29373, n.x, n.y + 3, n.z);
   }
   rebuild(chunks, progress) {
+    this.hintLift.clear();
     let ti = 0,
       ri = 0,
       fi = 0;
@@ -530,6 +530,20 @@ export class WorldView {
       }),
       150,
     );
+    this.liftArrows = new T.InstancedMesh(
+      new T.PlaneGeometry(3, 5),
+      new T.MeshBasicMaterial({
+        map: liftArrowTexture(),
+        transparent: true,
+        opacity: 0.5,
+        depthWrite: false,
+        side: T.DoubleSide,
+      }),
+      9,
+    );
+    this.liftArrows.count = 0;
+    this.liftArrows.frustumCulled = false;
+    this.scene.add(this.liftArrows);
     this.cloudMesh.count = 0;
     this.cloudMesh.frustumCulled = false;
     this.scene.add(this.cloudMesh);
@@ -547,10 +561,6 @@ export class WorldView {
   }
   update(f, time, weather, dt) {
     const p = f.p;
-    for (const sky of [this.skyDay, this.skyNight]) {
-      sky.repeat.set(Math.min(1, innerWidth / innerHeight / 1.5), 1);
-      sky.offset.set((1 - sky.repeat.x) * 0.5, 0);
-    }
     this.sway.value = time * Math.hypot(weather.x, weather.z) * 0.15;
     this.player.position.set(p.x, p.y, p.z);
     this.player.rotation.set(f.pitch, p.yaw, -f.roll, "YXZ");
@@ -577,10 +587,25 @@ export class WorldView {
           (this.settings.quality === "low" ? 80 : 140);
     this.cloudMesh.material.map = this.cloudFrames[Math.floor(time * 5) % 2];
     PAPER.time.value = time;
-    PAPER.day.value = Math.max(0.08, weather.sun);
+    const cycle = dayCycle(weather.phase);
+    this.cycle = cycle;
+    this.sky.update(cycle);
+    PAPER.day.value = cycle.brightness;
+    PAPER.tint.value.setRGB(
+      cycle.morning * 0.99 + cycle.day + cycle.afternoon + cycle.night * 0.9,
+      cycle.morning * 0.96 +
+        cycle.day +
+        cycle.afternoon * 0.88 +
+        cycle.night * 0.94,
+      cycle.morning * 0.88 + cycle.day + cycle.afternoon * 0.77 + cycle.night,
+    );
     PAPER.quality.value = this.settings.quality === "low" ? 0 : 1;
-    this.scene.background = weather.sun < 0.16 ? this.skyNight : this.skyDay;
-    this.scene.fog.color.set(weather.sun < 0.16 ? "#465b73" : LOOK.paper);
+    this.scene.fog.color.setRGB(0, 0, 0);
+    for (const key of ["morning", "day", "afternoon", "night"]) {
+      this.scene.fog.color.r += this.palette[key].r * cycle[key];
+      this.scene.fog.color.g += this.palette[key].g * cycle[key];
+      this.scene.fog.color.b += this.palette[key].b * cycle[key];
+    }
     this.player.userData.lineMaterial.resolution.set(innerWidth, innerHeight);
     this.player.userData.outline.position.x =
       Math.sin(Math.floor(time * 5) * 17) * 0.008;
@@ -626,6 +651,44 @@ export class WorldView {
     }
     this.cloudMesh.count = count;
     this.cloudMesh.instanceMatrix.needsUpdate = true;
+    let arrows = 0;
+    const nearbyThermals = this.clouds
+      .filter((t) => Math.hypot(t.x - p.x, t.z - p.z) < 120)
+      .sort(
+        (a, b) =>
+          Math.hypot(a.x - p.x, a.z - p.z) - Math.hypot(b.x - p.x, b.z - p.z),
+      )
+      .slice(0, this.settings.quality === "low" ? 2 : 3);
+    for (const t of nearbyThermals) {
+      const life =
+        0.35 + 0.65 * Math.sin(Math.PI * ((time / t.life + t.phase) % 1));
+      if (t.lift * life * weather.sun * (1 - weather.rain * 0.8) < 2) continue;
+      let sample = this.hintLift.get(t.id);
+      if (!sample || time < sample.time || time - sample.time > 1) {
+        const position = {
+          x: t.x + weather.x * 25 * 0.025,
+          y: t.y + 25,
+          z: t.z + weather.z * 25 * 0.025,
+        };
+        sample = { time, up: (this.sampleAir?.(position)?.y || 0) > 1 };
+        this.hintLift.set(t.id, sample);
+      }
+      if (!sample.up) continue;
+      for (let j = 0; j < 3; j++) {
+        const above = 12 + ((time * 2 + j * 9) % 28);
+        this.dummy.position.set(
+          t.x + weather.x * above * 0.025,
+          t.y + above,
+          t.z + weather.z * above * 0.025,
+        );
+        this.dummy.quaternion.copy(this.camera.quaternion);
+        this.dummy.scale.set(1, 1, 1);
+        this.dummy.updateMatrix();
+        this.liftArrows.setMatrixAt(arrows++, this.dummy.matrix);
+      }
+    }
+    this.liftArrows.count = arrows;
+    this.liftArrows.instanceMatrix.needsUpdate = true;
     updateFlock(this.birds, this.clouds, p, time, dt);
     this.fish.forEach((f, i) => {
       const l = this.world.lakes[i % this.world.lakes.length],

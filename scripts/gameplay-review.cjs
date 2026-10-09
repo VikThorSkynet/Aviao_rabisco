@@ -116,6 +116,7 @@ fs.mkdirSync(results, { recursive: true });
   await page.waitForTimeout(1200);
   await page.screenshot({ path: path.join(results, "free-route.png") });
   assert.ok(await page.locator("#hud").textContent());
+  await ctx.close();
   const mobile = await browser.newContext({
     viewport: { width: 390, height: 844 },
     isMobile: true,
@@ -126,7 +127,10 @@ fs.mkdirSync(results, { recursive: true });
   mp.on("pageerror", (e) => errors.push("mobile " + e.message));
   await mp.goto(url);
   await mp.click("#free");
-  await mp.waitForFunction(() => window.__game?.chunks.loaded.size === 25);
+  await mp.waitForFunction(()=>window.__game);
+  await mp.evaluate(()=>__game.paused=true);
+  await mp.waitForFunction(() => window.__game.chunks.loaded.size === 25);
+  await mp.evaluate(()=>__game.paused=false);
   await mp.locator("#touchBoost").tap();
   await mp.screenshot({ path: path.join(results, "free-mobile.png") });
   const mobileState = await mp.evaluate(() => ({

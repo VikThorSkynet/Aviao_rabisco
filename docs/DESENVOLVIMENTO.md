@@ -20,6 +20,7 @@ npm run dev
 | npm run docs:check | Verifica links locais de Markdown |
 | npm run memory:check | Valida memória e referências |
 | npm run build | Bundle, CSS e HTML em dist/ |
+| npm run test:navigation | Verificação de bússola, vento e objetivos, com capturas |
 | npm run release | Build e atualização do HTML da raiz |
 
 `node_modules/` e `dist/` são ignorados. `game3.html` é versionado para jogar por duplo clique. Capturas em `docs/images/` são documentação, não dependências do runtime.

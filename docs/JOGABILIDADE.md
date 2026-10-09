@@ -62,3 +62,13 @@ Recordes incluem altitude absoluta Y, duração de voo, distância horizontal se
 ## Opções
 
 Qualidade, sons, volume, variômetro sonoro, dia/noite e clima ficam no menu. Q muda qualidade em voo; M alterna som. Ponteiro de toque usa qualidade leve por padrão. As opções ficam no navegador.
+
+## Bússola, vento e direção de missão
+
+No Livre, a bússola fica à direita abaixo do HUD; a bandeira fica à esquerda. A agulha coral indica norte, a referência central indica o avião. A bandeira mostra para onde o vento sopra em relação ao avião, com intensidade. A marcação textual central anterior foi substituída.
+
+No mapa, escolha uma aventura para destacar um destino sugerido real, distância, rumo e linha de direção. A vista foca a missão; Ver mundo inteiro oferece visão geral. Pins 1/2/3 correspondem a cachoeira/ponte/térmica e ✓ indica concluída. Térmicas são mais fortes de dia. Terreno desconhecido continua oculto, mesmo com os objetivos visíveis. Detalhes: [NAVEGACAO_MISSOES.md](NAVEGACAO_MISSOES.md).
+
+## Leitura do ar e tarde
+
+A bandeira indica para onde o ar vai e a posição relativa ao avião. O cartão de corrente distingue a subida do ar da subida do avião e oferece dicas de térmica/encosta/descendente. Setas verdes marcam correntes fortes próximas. Tarde tem tons quentes e as quatro fases se misturam suavemente. Detalhes: [VENTO_E_CICLO.md](VENTO_E_CICLO.md).

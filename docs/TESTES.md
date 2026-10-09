@@ -2,7 +2,7 @@
 
 ## Suíte versionada
 
-`npm test` executa seis testes:
+`npm test` inclui memória, navegação e os seis testes de mundo/voo abaixo:
 
 1. Determinismo de altura e árvores em três seeds; três quedas principais com desnível mínimo.
 2. Vértices coerentes com heightAt e uma borda 24/8.
@@ -63,3 +63,11 @@ A suíte npm test também inclui quatro testes em tests/memory.test.js: rejeiç�
 ## Alinhamento visual — 2026-10-09
 
 Runners reproduzíveis e capturas comparativas adicionados. Resultados e limites: [VALIDACAO_VISUAL.md](VALIDACAO_VISUAL.md). Testes de navegador executados em Edge/SwiftShader; não certificar fps físico.
+
+## Navegação e missões
+
+Cinco testes de navigation.test.js e o runner test:navigation cobrem orientação, vento relativo, transição pelo norte, alvos reais, limites do mapa, seleção e conclusão visual. Total atual: quinze testes Node. Plano, capturas e limites em [NAVEGACAO_MISSOES.md](NAVEGACAO_MISSOES.md).
+
+## Clareza de vento e ciclo
+
+Total atual: 19 testes Node. Runner test:soaring valida fases do dia, indicações e uma térmica real. Capturas e limites em [VENTO_E_CICLO.md](VENTO_E_CICLO.md).

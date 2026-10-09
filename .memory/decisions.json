@@ -108,5 +108,31 @@
       "src/render/assets.js",
       "docs/VALIDACAO_VISUAL.md"
     ]
+  },
+  {
+    "id": "D010",
+    "date": "2026-10-09",
+    "status": "accepted",
+    "decision": "Bússola e bandeira relativas à orientação do avião, abaixo do HUD; missões com destinos reais e vista focada/global.",
+    "rationale": "Pedido do usuário, após planejamento. Objetivos são visíveis mesmo em papel não explorado, sem revelar terreno. Seleção fica na sessão; saves e regras de conclusão permanecem iguais.",
+    "references": [
+      "src/ui/navigation.js",
+      "src/ui/missions.js",
+      "src/ui/map.js",
+      "docs/NAVEGACAO_MISSOES.md"
+    ]
+  },
+  {
+    "id": "D011",
+    "date": "2026-10-09",
+    "status": "accepted",
+    "decision": "Explicar deslocamento horizontal e sustentação vertical separadamente; misturar os quatro períodos com pesos contínuos.",
+    "rationale": "Pedido do usuário. Origem da corrente é amostrada na física sem rebalancear as forças. Texturas de céu são estáticas e interpoladas na GPU para evitar troca brusca e uploads por frame.",
+    "references": [
+      "src/ui/soaring.js",
+      "src/world/day-cycle.js",
+      "src/render/paper-sky.js",
+      "docs/VENTO_E_CICLO.md"
+    ]
   }
 ]
