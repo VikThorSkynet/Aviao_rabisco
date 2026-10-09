@@ -1,3 +1,4 @@
+import { crossedBridge } from "../world/bridge.js";
 export class Progress {
   constructor(seed) {
     this.key = "rabisco_free_v1_" + seed;
@@ -15,6 +16,8 @@ export class Progress {
     this.safe = s.safe;
     this.time = s.time || 0;
     this.dirty = true;
+    this.previousPosition = null;
+    this.newChallenges = [];
   }
   update(f, w, world) {
     const p = f.p;
@@ -46,15 +49,13 @@ export class Progress {
         p.y > fall.bottom + 2 &&
         p.y < fall.top - 2
       )
-        this.challenges.add("cachoeira");
-    for (const b of world.specials.filter((s) => s.type === "bridge"))
-      if (
-        Math.abs(p.x - b.x) < 30 &&
-        Math.abs(p.z - b.z) < 5 &&
-        p.y < b.y - 1 &&
-        p.y > b.y - 14
-      )
-        this.challenges.add("ponte");
+        this.completeChallenge("cachoeira");
+    if (f.state === "flying")
+      for (const b of world.specials.filter((s) => s.type === "bridge"))
+        if (crossedBridge(this.previousPosition, p, b, world))
+          this.completeChallenge("ponte");
+    this.previousPosition =
+      f.state === "flying" ? { x: p.x, y: p.y, z: p.z } : null;
     if (f.state !== "flying") {
       this.thermalGain = 0;
       this.previousY = p.y;
@@ -63,8 +64,18 @@ export class Progress {
       this.thermalGain =
         (this.thermalGain || 0) + Math.max(0, p.y - this.previousY);
     this.previousY = p.y;
-    if (this.thermalGain >= 300) this.challenges.add("termal");
+    if (this.thermalGain >= 300) this.completeChallenge("termal");
     this.safe = f.safe;
+  }
+  completeChallenge(id) {
+    if (this.challenges.has(id)) return;
+    this.challenges.add(id);
+    this.newChallenges.push(id);
+  }
+  resetTraversal() {
+    this.previousPosition = null;
+    this.thermalGain = 0;
+    this.previousY = undefined;
   }
   observe(view, f, w) {
     const p = f.p;

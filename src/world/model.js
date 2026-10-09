@@ -1,3 +1,4 @@
+import { makeBridge, inBridgeCorridor } from "./bridge.js";
 import { CFG_FREE as C } from "../config.js";
 import {
   clamp,
@@ -315,15 +316,7 @@ export class WorldModel {
     ];
     this.specials = [
       { type: "village", ...this.village },
-      ...this.falls
-        .slice(0, 3)
-        .map((f, i) => ({
-          type: "bridge",
-          x: f.x,
-          y: f.top + 5,
-          z: f.z - 22,
-          id: `ponte-${i}`,
-        })),
+      ...this.falls.slice(0, 3).map((f, i) => makeBridge(this, f, i)),
       ...[
         this.landmarks[0],
         { x: this.spawn?.x || this.riverX(-1120) + 110, z: -1120 },
@@ -488,8 +481,18 @@ export class WorldModel {
       vertices,
       colors,
       indices: new Uint32Array(indices),
-      trees,
-      rocks,
+      trees: trees.filter(
+        (t) =>
+          !this.specials.some(
+            (b) => b.type === "bridge" && inBridgeCorridor(t, b),
+          ),
+      ),
+      rocks: rocks.filter(
+        (t) =>
+          !this.specials.some(
+            (b) => b.type === "bridge" && inBridgeCorridor(t, b),
+          ),
+      ),
       pickups,
       thermals,
       props,

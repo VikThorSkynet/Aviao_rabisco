@@ -1,3 +1,4 @@
+import { BRIDGE } from "../world/bridge.js";
 import { clamp } from "../shared/math.js";
 export function weather(world, time, settings) {
   const phase = settings.dayCycle ? (time / 720 + 0.18) % 1 : 0.25,
@@ -129,6 +130,23 @@ export class Flight {
     this.cooldown = 0;
     this.flash = "";
   }
+  practiceBridge(bridge) {
+    this.p = { ...bridge.entry };
+    this.safe = { ...bridge.entry };
+    this.speed = 12;
+    this.pitch = 0;
+    this.roll = 0;
+    this.vy = 0;
+    this.boosts = 5;
+    this.state = "flying";
+    this.cooldown = 0;
+    this.charge = 0;
+    this.airtime = 0;
+    this.distance = 0;
+    this.toss = 0;
+    this.flash =
+      "Tentativa da ponte: alinhe com o aro e voe por baixo da régua.";
+  }
   boost() {
     if (this.state !== "flying" || this.boosts < 1 || this.cooldown > 0)
       return false;
@@ -250,8 +268,8 @@ export class Flight {
       if (Math.hypot(p.x - s.x, p.z - s.z) > 70) continue;
       if (
         s.type === "bridge" &&
-        Math.abs(p.x - s.x) < 32 &&
-        Math.abs(p.z - s.z) < 3 &&
+        Math.abs(p.x - s.x) < BRIDGE.halfDeck &&
+        Math.abs(p.z - s.z) < BRIDGE.halfDepth &&
         Math.abs(p.y - s.y) < 1.2
       ) {
         this.recover("A régua ganhou esta… vamos de novo");

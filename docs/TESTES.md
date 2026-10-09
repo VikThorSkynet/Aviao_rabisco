@@ -71,3 +71,7 @@ Cinco testes de navigation.test.js e o runner test:navigation cobrem orientaçã
 ## Clareza de vento e ciclo
 
 Total atual: 19 testes Node. Runner test:soaring valida fases do dia, indicações e uma térmica real. Capturas e limites em [VENTO_E_CICLO.md](VENTO_E_CICLO.md).
+
+## Correção da ponte
+
+Total atual: 22 testes Node. bridge.test.js cobre corredor/vão, travessia real e 36 aproximações em 12 seeds. test:bridge verifica tentativa, vitória e persistência em navegador. [Diagnóstico e evidências](MISSAO_PONTE.md).

@@ -50,6 +50,7 @@ No celular, arraste para guiar e use **Soprar**. No chão, segure e solte o bot�
 | Documento | Conteúdo |
 | --- | --- |
 | [Arquitetura](docs/ARQUITETURA.md) | Módulos, execução, Worker e renderização |
+| [Missão da ponte](docs/MISSAO_PONTE.md) | Vão corrigido, tentativa próxima e confirmação de sucesso |
 | [Vento e ciclo](docs/VENTO_E_CICLO.md) | Como aproveitar correntes, tarde e transições suaves |
 | [Navegação e missões](docs/NAVEGACAO_MISSOES.md) | Plano, bússola, bandeira de vento e objetivos no mapa |
 | [Jogabilidade](docs/JOGABILIDADE.md) | Controles, voo, pouso e exploração |

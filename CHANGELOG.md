@@ -1,5 +1,12 @@
 # Histórico
 
+## Missão da ponte — 2026-10-09
+
+- Vão da ponte corrigido por amostragem da superfície, aro e corredor desobstruído.
+- Tentativa opcional próxima, câmera alinhada e ponto seguro para repetir.
+- Travessia real necessária; mensagem/som e recarga de sopro na primeira conclusão.
+- Testes em 12 seeds e navegador desktop/toque, preservando terreno, coletáveis e saves.
+
 ## Clareza do vento e tarde — 2026-10-09
 
 - Bandeira com seta e legendas cardinal/relativa.

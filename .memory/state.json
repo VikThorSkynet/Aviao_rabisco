@@ -122,6 +122,10 @@
     {
       "path": "src/render/paper-sky.js",
       "role": "Mistura GPU de céu diurno, tarde e noite"
+    },
+    {
+      "path": "src/world/bridge.js",
+      "role": "Vão, aproximação e contrato da travessia da ponte"
     }
   ],
   "validation": [
@@ -129,31 +133,31 @@
       "date": "2026-10-09",
       "kind": "automated",
       "status": "passed",
-      "evidence": "npm test: 19 testes passaram, incluindo dicas de vento e continuidade do ciclo."
+      "evidence": "npm test: 22 testes passaram, incluindo 36 passagens reais em 12 seeds e rejeição de acidentes/posição parada."
     },
     {
       "date": "2026-10-09",
       "kind": "browser-emulated",
       "status": "passed",
-      "evidence": "Edge/SwiftShader: navegação, quatro períodos e subida em térmica real, desktop 1365x768 e tarde móvel 390x844; capturas em docs/VENTO_E_CICLO.md."
+      "evidence": "test:bridge em Edge/SwiftShader: tentativa, travessia real, sucesso e save após reload em desktop/toque; sem erros."
     },
     {
       "date": "2026-10-09",
       "kind": "documentation",
       "status": "passed",
-      "evidence": "docs:check passou: 17 Markdown e 66 links locais após clareza do vento e ciclo."
+      "evidence": "docs:check passou: 18 Markdown e 73 links locais após correção da ponte."
     },
     {
       "date": "2026-10-09",
       "kind": "memory",
       "status": "passed",
-      "evidence": "memory:check passou: schema v1, 23 componentes e 11 decisões."
+      "evidence": "memory:check passou: schema v1, 24 componentes e 12 decisões."
     },
     {
       "date": "2026-10-09",
       "kind": "build",
       "status": "passed",
-      "evidence": "npm run release: HTML portátil com navegação, dicas e ciclo suave gerado e incluído na entrega aprovada."
+      "evidence": "npm run release gerou HTML corrigido, incluído na entrega aprovada pelo usuário."
     },
     {
       "date": "2026-10-08",
@@ -192,6 +196,7 @@
     "docs/VALIDACAO_VISUAL.md",
     ".memory/journal/2026-10-09.md",
     "docs/NAVEGACAO_MISSOES.md",
-    "docs/VENTO_E_CICLO.md"
+    "docs/VENTO_E_CICLO.md",
+    "docs/MISSAO_PONTE.md"
   ]
 }

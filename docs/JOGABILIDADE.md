@@ -72,3 +72,7 @@ No mapa, escolha uma aventura para destacar um destino sugerido real, distância
 ## Leitura do ar e tarde
 
 A bandeira indica para onde o ar vai e a posição relativa ao avião. O cartão de corrente distingue a subida do ar da subida do avião e oferece dicas de térmica/encosta/descendente. Setas verdes marcam correntes fortes próximas. Tarde tem tons quentes e as quatro fases se misturam suavemente. Detalhes: [VENTO_E_CICLO.md](VENTO_E_CICLO.md).
+
+## Missão 2: ponte-régua
+
+A passagem agora tem vão calculado pelo terreno, aro visível e altitude-alvo no mapa. Escolha missão 2 e Começar tentativa perto da ponte para treinar. Cruzar em voo é necessário; posição parada ou acidente não contam. Conclusões novas dão aviso, som e recarga de sopro quando houver espaço. [Detalhes e testes](MISSAO_PONTE.md).

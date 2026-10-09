@@ -2,6 +2,7 @@ import { soaringAdvice } from "../ui/soaring.js";
 import { dayCycle } from "../world/day-cycle.js";
 import { navigationMarkup, updateNavigation } from "../ui/navigation.js";
 import {
+  MISSIONS,
   missionTargets,
   missionListMarkup,
   targetLabel,
@@ -52,7 +53,8 @@ export function startFree(seed, settings, exit) {
     pointer = null,
     selectedMission = null,
     currentMissions = [],
-    mapOverview = false;
+    mapOverview = false,
+    bridgePracticeMessage = null;
   view.sampleAir = (position) => windAt(world, chunks, position, time, w);
   function message(text) {
     $("#toast").textContent = text;
@@ -105,7 +107,7 @@ export function startFree(seed, settings, exit) {
         ? `<span>Subida térmica neste voo: ${Math.min(300, Math.round(progress.thermalGain || 0))}/300 m</span>`
         : "";
     $("#missionGuidance").innerHTML = m
-      ? `<b>${m.number}. ${m.name}</b><span>${targetLabel(m)}</span>${thermalProgress}<p>${m.hint}</p><small>${m.completed ? "Missão já concluída. Você pode visitar o local novamente." : "O traço pontilhado indica a direção em linha reta para um local sugerido, mesmo em áreas ainda não exploradas."}</small>`
+      ? `<b>${m.number}. ${m.name}</b><span>${targetLabel(m)}</span>${thermalProgress}<p>${m.hint}</p>${m.id === "ponte" && m.target ? '<button id="practiceBridge" type="button">Começar tentativa perto da ponte</button>' : ""}<small>${m.completed ? "Missão já concluída. Você pode visitar o local novamente." : "O traço pontilhado indica a direção em linha reta para um local sugerido, mesmo em áreas ainda não exploradas."}</small>`
       : "";
   }
   $("#album").addEventListener("click", (e) => {
@@ -122,6 +124,25 @@ export function startFree(seed, settings, exit) {
     mapOverview = !mapOverview;
     renderMissionMap();
   };
+  $("#missionGuidance").addEventListener("click", (e) => {
+    if (!e.target.closest("#practiceBridge")) return;
+    const bridge = currentMissions.find((m) => m.id === "ponte")?.target;
+    if (!bridge) return;
+    input.charge = false;
+    keys.clear();
+    flight.practiceBridge(bridge);
+    const p = flight.p;
+    view.camera.position.set(
+      p.x + Math.sin(p.yaw) * 19,
+      p.y + 8,
+      p.z + Math.cos(p.yaw) * 19,
+    );
+    bridgePracticeMessage =
+      "Tentativa da ponte: mire no aro e voe abaixo da régua.";
+    progress.resetTraversal();
+    toggleMap();
+    save();
+  });
   function help() {
     const e = $("#freeHelp");
     e.hidden = !e.hidden;
@@ -315,12 +336,29 @@ export function startFree(seed, settings, exit) {
         message(flight.flash);
         flight.flash = "";
       }
+      if (bridgePracticeMessage) {
+        message(bridgePracticeMessage);
+        bridgePracticeMessage = null;
+      }
+      while (progress.newChallenges.length) {
+        const id = progress.newChallenges.shift(),
+          mission = MISSIONS.find((m) => m.id === id);
+        if (!mission) continue;
+        const recharge = flight.boosts < 5;
+        flight.boosts = Math.min(5, flight.boosts + 1);
+        message(
+          `✓ Missão ${mission.number} concluída!${recharge ? " Sopro recarregado." : ""}`,
+        );
+        audio.tone(880, 0.15);
+      }
+
       if (time - lastSave > 5) {
         save();
         lastSave = time;
       }
       audio.update(flight.p, flight.vy, time);
     }
+    view.bridgeComplete = progress.challenges.has("ponte");
     view.update(flight, time, w, dt);
     if (!paused) progress.observe(view, flight, w);
     frames++;

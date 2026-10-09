@@ -134,5 +134,17 @@
       "src/render/paper-sky.js",
       "docs/VENTO_E_CICLO.md"
     ]
+  },
+  {
+    "id": "D012",
+    "date": "2026-10-09",
+    "status": "accepted",
+    "decision": "Dar vão real à ponte e oferecer tentativa próxima; exigir cruzamento em voo e reconhecer novas conclusões.",
+    "rationale": "Relato de dificuldade do usuário: diagnóstico encontrou cerca de dois metros de passagem. A ajuda é opcional e mantém controles/física. Terreno e sorteios de coletáveis/térmicas preservados, IDs de save iguais.",
+    "references": [
+      "src/world/bridge.js",
+      "src/ui/progress.js",
+      "docs/MISSAO_PONTE.md"
+    ]
   }
 ]

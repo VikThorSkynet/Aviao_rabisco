@@ -12,7 +12,7 @@ export const MISSIONS = [
     number: 2,
     name: "Passe sob uma ponte-régua",
     short: "Ponte-régua",
-    hint: "Voe abaixo da régua, entre os apoios. Evite tocar na ponte e na água.",
+    hint: "Atravesse o aro desenhado por baixo da régua. Alinhe as asas e mantenha o nariz quase nivelado. Use Começar tentativa para treinar perto da ponte.",
   },
   {
     id: "termal",
@@ -63,7 +63,7 @@ export function targetLabel(mission) {
     mission.meters >= 1000
       ? `${(mission.meters / 1000).toFixed(1)} km`
       : `${Math.round(mission.meters)} m`;
-  return `${distanceText} · ${cardinal(mission.bearing)}${mission.id === "termal" ? " · mais forte durante o dia" : ""}`;
+  return `${distanceText} · ${cardinal(mission.bearing)}${mission.id === "termal" ? " · mais forte durante o dia" : mission.id === "ponte" ? ` · aro a ${Math.round(mission.target.guideY)} m` : ""}`;
 }
 export function missionListMarkup(missions, selected) {
   return `<div class="mission-list">${missions.map((m) => `<button class="mission-choice ${m.completed ? "completed" : ""} ${m.id === selected ? "selected" : ""}" data-mission="${m.id}" ${m.target ? "" : "disabled"} aria-pressed="${m.id === selected}"><span class="mission-badge">${m.completed ? "✓" : m.number}</span><span><b>${m.name}</b><small>${m.completed ? "Concluída · " : ""}${targetLabel(m)}</small></span></button>`).join("")}</div>`;

@@ -13,7 +13,8 @@
     "test:visual": "node scripts/visual-review.cjs",
     "test:browser": "node scripts/gameplay-review.cjs",
     "test:navigation": "node scripts/navigation-review.cjs",
-    "test:soaring": "node scripts/soaring-review.cjs"
+    "test:soaring": "node scripts/soaring-review.cjs",
+    "test:bridge": "node scripts/bridge-review.cjs"
   },
   "dependencies": {
     "three": "0.160.0"

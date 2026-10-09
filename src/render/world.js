@@ -1,3 +1,7 @@
+import { BRIDGE } from "../world/bridge.js";
+import { LineSegments2 } from "three/addons/lines/LineSegments2.js";
+import { LineSegmentsGeometry } from "three/addons/lines/LineSegmentsGeometry.js";
+import { LineMaterial } from "three/addons/lines/LineMaterial.js";
 import { PaperSky } from "./paper-sky.js";
 import { dayCycle } from "../world/day-cycle.js";
 import {
@@ -161,6 +165,7 @@ export class WorldView {
     this.flowers.frustumCulled = false;
     this.scene.add(this.flowers);
     this.makeWater();
+    this.bridgeGates = [];
     this.makeSpecials();
     this.makeLife(settings);
     this.life = new Life(this.scene, world, settings);
@@ -327,7 +332,7 @@ export class WorldView {
     for (const s of this.world.specials) {
       if (s.type === "bridge") {
         const b = this.mesh(
-          new T.BoxGeometry(64, 1.1, 6),
+          new T.BoxGeometry(BRIDGE.halfDeck * 2, 1.1, BRIDGE.halfDepth * 2),
           0xe0c78e,
           s.x,
           s.y,
@@ -350,10 +355,14 @@ export class WorldView {
         );
         for (const dx of [-29, 29])
           this.mesh(
-            new T.BoxGeometry(1, 18, 1),
+            new T.BoxGeometry(
+              1,
+              Math.max(2, s.y - this.world.heightAt(s.x + dx, s.z)),
+              1,
+            ),
             0xb4a380,
             s.x + dx,
-            s.y - 9,
+            s.y - Math.max(2, s.y - this.world.heightAt(s.x + dx, s.z)) / 2,
             s.z,
           );
       }
@@ -414,6 +423,48 @@ export class WorldView {
         );
         this.dynamic.push({ type: "geyser", mesh: g });
       }
+    }
+    for (const b of this.world.specials.filter((s) => s.type === "bridge")) {
+      const points = [
+        -b.halfOpening,
+        -5,
+        0,
+        b.halfOpening,
+        -5,
+        0,
+        b.halfOpening,
+        -5,
+        0,
+        b.halfOpening,
+        5,
+        0,
+        b.halfOpening,
+        5,
+        0,
+        -b.halfOpening,
+        5,
+        0,
+        -b.halfOpening,
+        5,
+        0,
+        -b.halfOpening,
+        -5,
+        0,
+      ];
+      const geometry = new LineSegmentsGeometry();
+      geometry.setPositions(points);
+      const mat = new LineMaterial({
+        color: "#b88a4e",
+        linewidth: 2,
+        transparent: true,
+        opacity: 0.75,
+      });
+      mat.resolution.set(innerWidth, innerHeight);
+      const ring = new LineSegments2(geometry, mat);
+      ring.frustumCulled = false;
+      ring.position.set(b.x, b.guideY, b.z);
+      this.scene.add(ring);
+      this.bridgeGates.push({ bridge: b, ring });
     }
     const n = this.world.landmarks.find((l) => l.id === "ninho");
     this.mesh(new T.TorusGeometry(6, 1.5, 6, 12), 0xa29373, n.x, n.y + 3, n.z);
@@ -561,6 +612,12 @@ export class WorldView {
   }
   update(f, time, weather, dt) {
     const p = f.p;
+    for (const { bridge, ring } of this.bridgeGates) {
+      ring.visible = Math.hypot(p.x - bridge.x, p.z - bridge.z) < 180;
+      ring.material.resolution.set(innerWidth, innerHeight);
+      ring.material.color.set(this.bridgeComplete ? "#77a572" : "#b88a4e");
+      ring.material.opacity = 0.55 + Math.sin(time * 2) * 0.1;
+    }
     this.sway.value = time * Math.hypot(weather.x, weather.z) * 0.15;
     this.player.position.set(p.x, p.y, p.z);
     this.player.rotation.set(f.pitch, p.yaw, -f.roll, "YXZ");
