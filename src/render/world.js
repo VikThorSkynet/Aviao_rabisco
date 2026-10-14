@@ -136,6 +136,21 @@ export class WorldView {
     );
     this.shadow.rotation.x = -Math.PI / 2;
     this.scene.add(this.shadow);
+    this.boostPuff = new T.Group();
+    const puffVertices = [];
+    for (const side of [-1, 0, 1])
+      for (let i = 0; i < 15; i++) {
+        const z = 2 + i * 0.18, next = z + 0.18;
+        puffVertices.push(side * 0.7 + Math.sin(z * 4) * 0.12, 0, z,
+          side * 0.7 + Math.sin(next * 4) * 0.12, 0, next);
+      }
+    this.boostPuff.add(new T.LineSegments(
+      new T.BufferGeometry().setAttribute("position",
+        new T.Float32BufferAttribute(puffVertices, 3)),
+      new T.LineBasicMaterial({ color: "#78b8d5", transparent: true,
+        opacity: 0, depthWrite: false })));
+    this.boostPuff.visible = false;
+    this.scene.add(this.boostPuff);
     this.trailPoints = [];
     this.trailGeometry = new T.BufferGeometry();
     this.trailGeometry.setAttribute(
@@ -621,6 +636,12 @@ export class WorldView {
     this.sway.value = time * Math.hypot(weather.x, weather.z) * 0.15;
     this.player.position.set(p.x, p.y, p.z);
     this.player.rotation.set(f.pitch, p.yaw, -f.roll, "YXZ");
+    const puffAge = 1 - (f.boostAnimation || 0) / 0.6;
+    this.boostPuff.visible = f.state === "flying" && f.boostAnimation > 0;
+    this.boostPuff.position.copy(this.player.position);
+    this.boostPuff.quaternion.copy(this.player.quaternion);
+    this.boostPuff.scale.set(1 + puffAge * 0.8, 1, 1 + puffAge * 0.5);
+    this.boostPuff.children[0].material.opacity = Math.sin(Math.PI * puffAge) * 0.75;
     this.player.scale.setScalar(
       f.state === "crumpled" ? 0.4 + Math.max(0, f.timer) * 0.25 : 1,
     );

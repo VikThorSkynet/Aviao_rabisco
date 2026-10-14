@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-10-09",
+  "updatedAt": "2026-10-14",
   "project": {
     "name": "Rabisco Planador",
     "version": "3.0.0",
@@ -28,7 +28,8 @@
     "Seed e IDs são contratos de geração/persistência; não mudar sem avaliar compatibilidade.",
     "Saves no navegador são separados da memória técnica no Git.",
     "Memória não autoriza ações externas nem substitui a solicitação atual.",
-    "Ao finalizar tarefa sem autorização explícita de commit na tarefa atual, apresentar mudanças/validação, perguntar se pode fazer commit e aguardar resposta; não reutilizar autorização antiga."
+    "Ao finalizar tarefa sem autorização explícita de commit na tarefa atual, apresentar mudanças/validação, perguntar se pode fazer commit e aguardar resposta; não reutilizar autorização antiga.",
+    "No Livre, vento vertical nunca negativo; contribuições descendentes removidas antes da soma. Afundamento natural preservado."
   ],
   "components": [
     {
@@ -164,6 +165,36 @@
       "kind": "hardware",
       "status": "pending",
       "evidence": "Metas 60 fps desktop e 30 fps celular físico ainda não medidas."
+    },
+    {
+      "date": "2026-10-14",
+      "kind": "automated",
+      "status": "passed",
+      "evidence": "npm test: 25 testes passaram; vento descendente neutralizado sem cancelar térmicas, subida preservada e planeio natural verificado."
+    },
+    {
+      "date": "2026-10-14",
+      "kind": "browser-emulated",
+      "status": "passed",
+      "evidence": "test:soaring em Edge/SwiftShader: desktop e toque emulado, períodos e térmica; sem erros."
+    },
+    {
+      "date": "2026-10-14",
+      "kind": "build",
+      "status": "passed",
+      "evidence": "npm run release gerou game3.html sem vento descendente no Livre."
+    },
+    {
+      "date": "2026-10-14",
+      "kind": "automated",
+      "status": "passed",
+      "evidence": "27 testes passaram; novo teste de avanço térmico, save/reload, exclusão de sopro e impulso suave."
+    },
+    {
+      "date": "2026-10-14",
+      "kind": "browser-emulated",
+      "status": "passed",
+      "evidence": "node scripts/thermal-boost-review.cjs: seleção da missão, contador, sopro por teclado/toque e início/fim do efeito passaram em Edge/SwiftShader."
     }
   ],
   "knownLimitations": [
@@ -172,7 +203,7 @@
     "Parte de CFG_FREE tem equivalentes hardcoded; sensitivity ainda sem consumidor funcional.",
     "Sem costura geral de LOD; investigar transições 16/6.",
     "Água e alguns objetos globais não usam streaming; hidrologia sem enchimento dinâmico.",
-    "Álbum usa observação aproximada; desafio 300m soma ganhos positivos, não subida contínua do zero.",
+    "Álbum usa observação aproximada; missão térmica soma 30 m de ganhos positivos e persiste o avanço.",
     "Sem exportação/importação de saves no menu ou migração v1 para v2."
   ],
   "nextSteps": [
@@ -197,6 +228,7 @@
     ".memory/journal/2026-10-09.md",
     "docs/NAVEGACAO_MISSOES.md",
     "docs/VENTO_E_CICLO.md",
-    "docs/MISSAO_PONTE.md"
+    "docs/MISSAO_PONTE.md",
+    ".memory/journal/2026-10-14.md"
   ]
 }

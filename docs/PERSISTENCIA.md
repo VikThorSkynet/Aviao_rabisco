@@ -97,3 +97,5 @@ Object.keys(localStorage).filter(key => key.startsWith('rabisco_'));
 ```
 
 Copie o valor da chave de uma seed para arquivo local como backup. Não versione saves pessoais. Para resetar, guarde o valor e remova apenas a chave desejada, sem limpar todo o armazenamento da origem.
+
+O campo opcional `thermalGain` guarda de 0 a 30 m de avanço da missão 3. Saves antigos sem o campo começam em zero; conquistas existentes com ID `termal` são preservadas. Pousar ou recuperar não apaga o avanço.

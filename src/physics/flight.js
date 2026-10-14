@@ -23,7 +23,7 @@ export function windAt(world, chunks, p, time, w) {
     n = world.windNormal(p.x, p.z),
     face = -(w.x * n.x + w.z * n.z);
   const sources = {
-    ridge: face * 1.2 * Math.exp(-Math.max(0, above) / 60),
+    ridge: Math.max(0, face) * 1.2 * Math.exp(-Math.max(0, above) / 60),
     thermal: 0,
     gust: 0,
     wave: 0,
@@ -61,14 +61,15 @@ export function windAt(world, chunks, p, time, w) {
     }
   if (ground > 250 && face < 0 && above > 60) {
     const lift =
-      Math.sin((p.x * w.x + p.z * w.z) / 190) * 2.5 * Math.exp(-above / 400);
+      Math.max(0, Math.sin((p.x * w.x + p.z * w.z) / 190)) *
+      2.5 * Math.exp(-above / 400);
     y += lift;
     sources.wave += lift;
   }
   for (const f of world.falls) {
     const d = Math.hypot(p.x - f.x, p.z - f.z);
     if (d < 30) {
-      const lift = p.y < f.bottom + 12 ? 1.8 * (1 - d / 30) : -2 * (1 - d / 30);
+      const lift = p.y < f.bottom + 12 ? 1.8 * (1 - d / 30) : 0;
       y += lift;
       sources.mist += lift;
     }
@@ -96,7 +97,7 @@ export function windAt(world, chunks, p, time, w) {
   let source = null,
     strongest = 0;
   for (const [name, lift] of Object.entries(sources)) {
-    const impact = lift * (y < 0 ? -1 : 1);
+    const impact = lift;
     if (impact > strongest) {
       strongest = impact;
       source = name;
@@ -105,7 +106,7 @@ export function windAt(world, chunks, p, time, w) {
   return {
     x: w.x + fan,
     z: w.z,
-    y: clamp(y, -10, 14),
+    y: clamp(y, 0, 14),
     thermal,
     ground,
     above,
@@ -144,6 +145,8 @@ export class Flight {
     this.airtime = 0;
     this.distance = 0;
     this.toss = 0;
+    this.boostLift = 0;
+    this.boostAnimation = 0;
     this.flash =
       "Tentativa da ponte: alinhe com o aro e voe por baixo da régua.";
   }
@@ -152,7 +155,8 @@ export class Flight {
       return false;
     this.boosts--;
     this.speed = Math.min(28, this.speed + 7);
-    this.p.y += 2;
+    this.boostLift = 0.35;
+    this.boostAnimation = 0.6;
     this.cooldown = 0.5;
     return true;
   }
@@ -173,6 +177,8 @@ export class Flight {
     this.distance = 0;
   }
   recover(reason) {
+    this.boostLift = 0;
+    this.boostAnimation = 0;
     this.state = "crumpled";
     this.timer = 1.4;
     this.airtime = 0;
@@ -183,6 +189,7 @@ export class Flight {
   step(dt, input, wind, chunks) {
     const p = this.p;
     this.cooldown = Math.max(0, this.cooldown - dt);
+    this.boostAnimation = Math.max(0, (this.boostAnimation || 0) - dt);
     if (this.state === "crumpled") {
       this.timer -= dt;
       if (this.timer <= 0) {
@@ -232,7 +239,9 @@ export class Flight {
       dz = (-Math.cos(p.yaw) * this.speed + wind.z * 0.35) * dt;
     p.x += dx;
     p.z += dz;
-    p.y += this.vy * dt;
+    const boostStep = Math.min(dt, this.boostLift || 0);
+    this.boostLift = Math.max(0, (this.boostLift || 0) - dt);
+    p.y += this.vy * dt + boostStep * (2 / 0.35);
     this.distance += Math.hypot(dx, dz);
     this.airtime += dt;
     if (Math.abs(p.x) > 2010 || Math.abs(p.z) > 2010) {

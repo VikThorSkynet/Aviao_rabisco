@@ -8,7 +8,7 @@ test("wind labels explain where the air goes relative to the aircraft", () => {
   assert.equal(relativeWindLabel(180), "para trás");
   assert.equal(relativeWindLabel(270), "para a esquerda");
 });
-test("air lift, aircraft climb and downdrafts receive different cues", () => {
+test("air lift and natural aircraft descent receive different cues", () => {
   const f = { state: "flying", speed: 12, vy: 2 },
     w = { sun: 1 };
   assert.equal(soaringAdvice({ y: 3, source: "thermal" }, f, w).kind, "lift");
@@ -20,7 +20,7 @@ test("air lift, aircraft climb and downdrafts receive different cues", () => {
     soaringAdvice({ y: 2, source: "ridge" }, { ...f, vy: -1 }, w).kind,
     "potential",
   );
-  assert.match(soaringAdvice({ y: -2, source: "ridge" }, f, w).hint, /Saia/);
+  assert.match(soaringAdvice({ y: 0 }, { ...f, vy: -2 }, w).hint, /naturalmente/);
   assert.match(soaringAdvice({ y: 0 }, f, { sun: 0 }).hint, /encostas/);
 });
 test("day cycle has morning, day, afternoon and night with normalized blends", () => {

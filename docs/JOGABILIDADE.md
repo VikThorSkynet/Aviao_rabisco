@@ -25,7 +25,7 @@ No Livre com toque, arrastar horizontalmente vira; verticalmente muda o nariz. *
 
 ## Energia e sopros
 
-Baixar o nariz aumenta velocidade e perde altura. Levantar transforma velocidade em subida; o ar vertical também influencia. Curvas aumentam afundamento. O vento global desloca o avião e correntes locais podem sustentar ou derrubar.
+Baixar o nariz aumenta velocidade e perde altura. Levantar transforma velocidade em subida; o ar vertical também influencia. Curvas aumentam afundamento. O vento global desloca o avião e no Livre, correntes locais podem sustentar, mas nunca empurram para baixo. O afundamento natural do planador permanece.
 
 É uma física de jogo, não uma simulação aerodinâmica completa. A atualização normal limita velocidade entre 4 e 32 m/s.
 
@@ -33,12 +33,12 @@ O Livre começa com cinco sopros. Cada impulso exige uma unidade, consome uma e 
 
 ## Sustentação
 
-- Encostas: normal do terreno e vento definem subida ou descida; efeito cai com altura.
+- Encostas: normal do terreno e vento definem subida; o lado descendente fica neutro; efeito cai com altura.
 - Térmicas: perfil em sino, inclinação pelo vento, ciclo de vida e dependência do sol; não surgem sobre água.
 - Rajadas: fontes locais concentradas.
-- Onda: faixas senoidais a sotavento de relevo alto.
+- Onda: faixas de subida a sotavento de relevo alto; trechos negativos ficam neutros.
 - Efeito solo: reduz afundamento gradualmente nos dois metros inferiores.
-- Cachoeiras: leve descendente perto da queda e ascendente na névoa da base.
+- Cachoeiras: ar neutro perto da queda e ascendente na névoa da base.
 - Fontes temáticas: gêiser, balões, vila e empurrão horizontal próximo dela.
 
 Nuvens e aves ajudam a encontrar correntes. À noite e na chuva, térmicas enfraquecem. Dia/noite dura cerca de 12 minutos de simulação; vento global muda lentamente.
@@ -55,7 +55,7 @@ Tab pausa e abre grade de 64 × 64 células. Áreas próximas do avião são exp
 
 Figurinhas incluem arco-íris, peixe, borboleta e bando. A observação usa aproximações de distância/visibilidade; não há um sistema de fotografia ou oclusão completo.
 
-Desafios opcionais: atravessar a queda, passar sob ponte-régua e acumular 300 m de subida térmica no mesmo voo. Esse último soma ganhos positivos quando uma térmica é detectada e o cooldown acabou; não verifica uma subida contínua do nível zero até 300 m.
+Desafios opcionais: atravessar a queda, passar sob ponte-régua e acumular 30 m de subida nas térmicas. A missão 3 soma ganhos positivos em voo dentro de uma térmica, exclui o impulso dos sopros e conserva o avanço após pousos, recuperação e recarregamento. Escolha a missão no mapa para ver o contador no HUD. Siga uma seta verde e faça curvas suaves dentro da corrente.
 
 Recordes incluem altitude absoluta Y, duração de voo, distância horizontal sem pousar e IDs de térmicas visitados. Altura sobre o terreno aparece no diagnóstico, não no indicador principal.
 
@@ -71,8 +71,12 @@ No mapa, escolha uma aventura para destacar um destino sugerido real, distância
 
 ## Leitura do ar e tarde
 
-A bandeira indica para onde o ar vai e a posição relativa ao avião. O cartão de corrente distingue a subida do ar da subida do avião e oferece dicas de térmica/encosta/descendente. Setas verdes marcam correntes fortes próximas. Tarde tem tons quentes e as quatro fases se misturam suavemente. Detalhes: [VENTO_E_CICLO.md](VENTO_E_CICLO.md).
+A bandeira indica para onde o ar vai e a posição relativa ao avião. O cartão de corrente distingue a subida do ar da subida do avião e oferece dicas de térmica/encosta e afundamento natural. Setas verdes marcam correntes fortes próximas. Tarde tem tons quentes e as quatro fases se misturam suavemente. Detalhes: [VENTO_E_CICLO.md](VENTO_E_CICLO.md).
 
 ## Missão 2: ponte-régua
 
 A passagem agora tem vão calculado pelo terreno, aro visível e altitude-alvo no mapa. Escolha missão 2 e Começar tentativa perto da ponte para treinar. Cruzar em voo é necessário; posição parada ou acidente não contam. Conclusões novas dão aviso, som e recarga de sopro quando houver espaço. [Detalhes e testes](MISSAO_PONTE.md).
+
+## Animação do sopro
+
+O impulso mantém dois metros de assistência, distribuídos por 0,35 s em vez de um salto instantâneo. Três traços azuis de rabisco acompanham a orientação do avião, se expandem e desaparecem em 0,6 s. Só aparecem quando um sopro é realmente consumido; pausa congela o efeito e recuperação o limpa.

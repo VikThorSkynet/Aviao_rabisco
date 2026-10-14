@@ -1,5 +1,18 @@
 # Histórico
 
+## Sopro suave e missão 3 — 2026-10-14
+
+- Impulso gradual e efeito de vento em rabisco, com duração curta.
+- Missão 3 reduzida a 30 m acumulados, progresso salvo e contador no HUD.
+- Sopros e relançamentos não contam como subida térmica; conquistas antigas preservadas.
+
+
+## Livre sem vento descendente — 2026-10-14
+
+- Removidas forças descendentes de encostas, ondas e cachoeiras antes da soma do vento.
+- Preservados vento horizontal, correntes ascendentes e afundamento natural do avião.
+- Ajuda e dicas atualizadas; modo Rota preservado.
+
 ## Missão da ponte — 2026-10-09
 
 - Vão da ponte corrigido por amostragem da superfície, aro e corredor desobstruído.

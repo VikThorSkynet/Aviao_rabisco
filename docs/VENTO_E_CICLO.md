@@ -10,12 +10,12 @@ O vento horizontal desloca o avião. Para ganhar ou manter altura, procure o **a
 
 - Verde: ar subindo e avião ganhando altura. Em térmica, fazer círculos ajuda a permanecer no centro.
 - Amarelo: ar sobe, mas não basta para a situação atual do avião. Aproximar-se do centro, nivelar um mergulho ou recuperar velocidade pode ajudar.
-- Coral: ar descendo. A indicação reconhece descendente de encosta e orienta a sair desse lado.
+- No Livre não há vento descendente. Sem sustentação suficiente, o avião ainda perde altura pela física do planeio.
 - Neutro: procurar nuvens, aves e correntes de subida. À noite, preferir encostas que recebem vento.
 
-Até nove setas verdes indicam térmicas fortes próximas; em leve, até seis. Elas aparecem a baixa altura, seguem a inclinação do vento e somem quando a força disponível fica fraca. A indicação também verifica o vento total na base da corrente, evitando marcar uma térmica cuja subida é vencida por uma descendente. O painel de ajuda explica a diferença entre movimento do ar e movimento do avião.
+Até nove setas verdes indicam térmicas fortes próximas; em leve, até seis. Elas aparecem a baixa altura, seguem a inclinação do vento e somem quando a força disponível fica fraca. A indicação também verifica o vento total na base da corrente, mostrando apenas correntes com subida suficiente. O painel de ajuda explica a diferença entre movimento do ar e movimento do avião.
 
-`windAt()` agora fornece a origem predominante da sustentação/descendente. As forças, limites e integração do voo continuam com os valores anteriores; a mudança é de leitura e orientação.
+`windAt()` fornece a origem predominante da sustentação. Desde 2026-10-14, cada contribuição descendente de encosta, onda ou cachoeira é removida antes da soma, preservando as correntes ascendentes. A componente vertical fica entre 0 e 14 m/s. Vento horizontal, afundamento natural e modo Rota permanecem iguais.
 
 ## Manhã, dia, tarde e noite
 

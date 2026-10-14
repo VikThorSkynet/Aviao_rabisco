@@ -1,4 +1,5 @@
 import { cardinal, vectorBearing } from "./navigation.js";
+export const THERMAL_GOAL = 30;
 export const MISSIONS = [
   {
     id: "cachoeira",
@@ -17,9 +18,9 @@ export const MISSIONS = [
   {
     id: "termal",
     number: 3,
-    name: "Ganhe 300 m em correntes térmicas",
+    name: "Suba 30 m com as térmicas",
     short: "Térmicas",
-    hint: "Circule sob nuvens e aves. Some 300 m de subida térmica no mesmo voo; pousar ou amassar reinicia essa tentativa.",
+    hint: "Voe até uma seta verde e faça curvas suaves dentro da corrente. Acumule 30 m de subida nas térmicas. Pousar não apaga seu avanço; sopros não contam.",
   },
 ];
 const distance = (a, b) => Math.hypot(a.x - b.x, a.z - b.z);

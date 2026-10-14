@@ -54,4 +54,4 @@ Para reproduzir software GPU no Windows: `$env:RABISCO_SOFTWARE_GPU='1'`. Chromi
 
 ## Clareza do vento e períodos do dia
 
-A bandeira passou a ter uma seta do sentido do ar, legenda cardinal e indicação relativa ao avião. Um cartão separado explica ar subindo/descendo e oferece dica da corrente. Manhã, dia, tarde e noite se misturam sem a troca brusca de textura anterior. Detalhes e capturas: [VENTO_E_CICLO.md](VENTO_E_CICLO.md).
+A bandeira passou a ter uma seta do sentido do ar, legenda cardinal e indicação relativa ao avião. Um cartão separado explica ar subindo e o afundamento natural do planador e oferece dica da corrente. Manhã, dia, tarde e noite se misturam sem a troca brusca de textura anterior. Detalhes e capturas: [VENTO_E_CICLO.md](VENTO_E_CICLO.md).

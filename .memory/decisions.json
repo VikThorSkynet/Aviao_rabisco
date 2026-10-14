@@ -146,5 +146,30 @@
       "src/ui/progress.js",
       "docs/MISSAO_PONTE.md"
     ]
+  },
+  {
+    "id": "D013",
+    "date": "2026-10-14",
+    "status": "accepted",
+    "decision": "Remover vento descendente exclusivamente no Livre, por contribuição antes da soma.",
+    "rationale": "Pedido do usuário. Encostas, ondas e quedas não anulam sustentação de térmicas próximas; planeio natural e vento horizontal permanecem.",
+    "references": [
+      "src/physics/flight.js",
+      "tests/wind.test.js",
+      "docs/VENTO_E_CICLO.md"
+    ]
+  },
+  {
+    "id": "D014",
+    "date": "2026-10-14",
+    "status": "accepted",
+    "decision": "Missão térmica de 30 m acumulados e salvos; sopro suave com rabisco de vento.",
+    "rationale": "Pedido do usuário por clareza e facilidade. Mantém ID termal e conquistas antigas, evita perder avanço por pouso e exclui impulsos do contador.",
+    "references": [
+      "src/ui/progress.js",
+      "src/ui/missions.js",
+      "src/render/world.js",
+      "tests/thermal-boost.test.js"
+    ]
   }
 ]

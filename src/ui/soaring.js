@@ -24,15 +24,6 @@ export function soaringAdvice(air, flight, weather) {
       title: "Redobrando o papel…",
       hint: "Seu próximo voo começa no ponto seguro.",
     };
-  if (air.y < -0.7)
-    return {
-      kind: "sink",
-      title: `↓ Ar descendo · ${air.y.toFixed(1)} m/s`,
-      hint:
-        air.source === "ridge"
-          ? "Saia deste lado da encosta. Busque o lado que recebe o vento."
-          : "Afaste-se da descendente e procure nuvens ou aves circulando.",
-    };
   if (air.y > 0.7) {
     const hints = {
       thermal: "Faça círculos para permanecer no centro da térmica.",
@@ -63,6 +54,6 @@ export function soaringAdvice(air, flight, weather) {
     hint:
       weather.sun < 0.15
         ? "Poucas térmicas agora. Busque vento subindo pelas encostas."
-        : "Procure nuvens e aves. Siga as setas verdes de subida.",
+        : "Sem corrente de subida, o planador perde altura naturalmente. Busque as setas verdes.",
   };
 }
