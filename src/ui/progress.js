@@ -1,4 +1,4 @@
-import { THERMAL_GOAL } from "./missions.js";
+import { VILLAGE_RADIUS } from "./missions.js";
 import { crossedBridge } from "../world/bridge.js";
 export class Progress {
   constructor(seed) {
@@ -16,7 +16,7 @@ export class Progress {
     this.records = s.records || { altitude: 0, airtime: 0, distance: 0 };
     this.safe = s.safe;
     this.time = s.time || 0;
-    this.thermalGain = Number.isFinite(s.thermalGain) ? Math.max(0, Math.min(THERMAL_GOAL, s.thermalGain)) : 0;
+
     this.dirty = true;
     this.previousPosition = null;
     this.newChallenges = [];
@@ -58,14 +58,11 @@ export class Progress {
           this.completeChallenge("ponte");
     this.previousPosition =
       f.state === "flying" ? { x: p.x, y: p.y, z: p.z } : null;
-    if (f.state === "flying" && this.previousFlying && w.thermal &&
-        f.cooldown === 0 && this.previousCooldown === 0 && this.previousY !== undefined)
-      this.thermalGain = Math.min(THERMAL_GOAL,
-        this.thermalGain + Math.max(0, p.y - this.previousY));
-    this.previousY = p.y;
-    this.previousFlying = f.state === "flying";
-    this.previousCooldown = f.cooldown;
-    if (this.thermalGain >= THERMAL_GOAL) this.completeChallenge("termal");
+    if (world.village && (f.state === "flying" || f.state === "grounded") &&
+        Math.hypot(p.x - world.village.x, p.z - world.village.z) <= VILLAGE_RADIUS &&
+        p.y >= world.heightAt(p.x, p.z) + 0.5 &&
+        p.y <= world.heightAt(p.x, p.z) + 80)
+      this.completeChallenge("visita-vila");
     this.safe = f.safe;
   }
   completeChallenge(id) {
@@ -75,8 +72,7 @@ export class Progress {
   }
   resetTraversal() {
     this.previousPosition = null;
-    this.previousFlying = false;
-    this.previousY = undefined;
+
   }
   observe(view, f, w) {
     const p = f.p;
@@ -115,7 +111,6 @@ export class Progress {
           discovered: [...this.discovered],
           thermals: [...this.thermals],
           challenges: [...this.challenges],
-          thermalGain: this.thermalGain,
           records: this.records,
           safe: this.safe,
           time,

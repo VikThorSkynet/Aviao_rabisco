@@ -195,6 +195,18 @@
       "kind": "browser-emulated",
       "status": "passed",
       "evidence": "node scripts/thermal-boost-review.cjs: seleção da missão, contador, sopro por teclado/toque e início/fim do efeito passaram em Edge/SwiftShader."
+    },
+    {
+      "date": "2026-10-14",
+      "kind": "automated",
+      "status": "passed",
+      "evidence": "28 testes passaram; nova visita rejeita altitude alta/acidente, preserva saves e aproximação real em 12 seeds passou sem sopros."
+    },
+    {
+      "date": "2026-10-14",
+      "kind": "browser-emulated",
+      "status": "passed",
+      "evidence": "thermal-boost-review.cjs em Edge/SwiftShader desktop/toque: nova seleção, HUD, aproximação real, conclusão em voo e save/reload passaram sem pageerrors."
     }
   ],
   "knownLimitations": [
@@ -203,7 +215,7 @@
     "Parte de CFG_FREE tem equivalentes hardcoded; sensitivity ainda sem consumidor funcional.",
     "Sem costura geral de LOD; investigar transições 16/6.",
     "Água e alguns objetos globais não usam streaming; hidrologia sem enchimento dinâmico.",
-    "Álbum usa observação aproximada; missão térmica soma 30 m de ganhos positivos e persiste o avanço.",
+    "Álbum usa observação aproximada; missão 3 agora é visita à vila, com novo ID visita-vila.",
     "Sem exportação/importação de saves no menu ou migração v1 para v2."
   ],
   "nextSteps": [

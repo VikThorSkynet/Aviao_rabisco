@@ -11,7 +11,7 @@ Na revisão visual, os destinos próximos ficavam agrupados no mapa de 4 km. A i
 ## Implementação
 
 - `src/ui/navigation.js`: SVGs de papel/rabisco e conversão de yaw/vetores para direções. A agulha coral aponta norte; a referência do avião fica voltada para cima. O rumo aparece abaixo. A bandeira aponta para onde o ar vai, relativo à orientação do avião, usando o vento horizontal amostrado pela física. Em calmaria, fica discreta. Rotação atravessa 0° pelo caminho curto.
-- `src/ui/missions.js`: destinos sugeridos da cachoeira principal mais próxima, ponte-régua mais próxima e térmica local mais próxima. Fontes são os dados reais do mundo/chunks. Na ausência de chunks, busca térmicas por seed na região inicial, sem alterar geração ou progresso.
+- `src/ui/missions.js`: destinos da cachoeira principal mais próxima, ponte-régua mais próxima e Vila Dobradinha. A vila é um destino fixo do mundo, independente de chunks e clima.
 - `src/ui/map.js`: pins numerados, ✓ concluído, conectores para evitar sobreposição, linha pontilhada até o destino selecionado e vista focada com limites finitos. Só os pins e a direção aparecem sobre papel desconhecido; o terreno continua oculto.
 - `src/modes/free.js`: integração no HUD e seleção da missão no mapa. Ao reabrir após concluir a selecionada, sugere outra pendente. Missões concluídas podem ser selecionadas para revisitar. A seleção é da sessão e não muda o formato dos saves.
 - Interface usa cartões e escrita já adotados pelo jogo. A marcação antiga no centro foi removida. Os dois instrumentos ficam abaixo do cartão de altitude: vento à esquerda e bússola à direita, no desktop e no celular.
@@ -22,7 +22,7 @@ Abra Livre. Para direção, consulte a bússola; para o deslocamento do ar, obse
 
 Abra Tab ou Mapa. Em **Pequenas aventuras**, escolha uma missão; o pin destacado e a linha pontilhada mostram a direção em linha reta. Os cartões informam distância horizontal e ponto cardeal. **Ver mundo inteiro** troca a escala; **Focar missão** retorna à vista local. Ao selecionar outra missão, a vista volta a focá-la.
 
-A missão térmica mostra quanto já foi acumulado no voo e lembra que correntes são mais fortes de dia. Pouso/colisão continuam reiniciando a tentativa, conforme a regra existente. A linha não controla o avião nem calcula um caminho que evite o relevo.
+A missão 3 mostra a distância até a vila e permite iniciar uma aproximação curta. A linha indica a direção, sem controlar o avião nem calcular um caminho que evite o relevo.
 
 No mapa, botões funcionam com teclado; Escape ou Fechar encerra o painel. Tab alterna o mapa quando o foco está fora dele; dentro do painel, Tab navega pelos controles.
 
@@ -55,3 +55,5 @@ Para reproduzir software GPU no Windows: `$env:RABISCO_SOFTWARE_GPU='1'`. Chromi
 ## Clareza do vento e períodos do dia
 
 A bandeira passou a ter uma seta do sentido do ar, legenda cardinal e indicação relativa ao avião. Um cartão separado explica ar subindo e o afundamento natural do planador e oferece dica da corrente. Manhã, dia, tarde e noite se misturam sem a troca brusca de textura anterior. Detalhes e capturas: [VENTO_E_CICLO.md](VENTO_E_CICLO.md).
+
+A missão 3 foi substituída pela visita à Vila Dobradinha: destino fixo, distância no HUD, círculo azul e aproximação opcional curta. Não exige subida térmica nem pouso.

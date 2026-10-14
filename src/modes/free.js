@@ -3,7 +3,6 @@ import { dayCycle } from "../world/day-cycle.js";
 import { navigationMarkup, updateNavigation } from "../ui/navigation.js";
 import {
   MISSIONS,
-  THERMAL_GOAL,
   missionTargets,
   missionListMarkup,
   targetLabel,
@@ -18,7 +17,7 @@ import { Sound } from "../audio/sound.js";
 import { CFG_FREE as C, MODE, saveSettings } from "../config.js";
 export function startFree(seed, settings, exit) {
   const root = document.getElementById("app");
-  root.innerHTML = `<div class="free-ui"><div class="hud-stack"><div class="instruments"><strong id="alt">0</strong> <small>m de altitude</small><div class="meter-row"><span id="vario"></span><span id="boosts"></span></div></div>${navigationMarkup()}<div id="liftCue" class="lift-cue"><b id="liftTitle"></b><span id="liftHint"></span></div><div id="thermalMission" class="day-period" hidden></div><div id="dayPeriod" class="day-period"></div></div><div class="top-actions"><button id="mapButton">Mapa · Tab</button><button id="helpButton">?</button><button id="menuButton">Menu</button></div><div class="toast" id="toast">Desenhando os arredores…</div><div class="charge" hidden><i></i></div><div class="hint">← → virar · ↑ ↓ inclinar · espaço: sopro · Tab: mapa · H: ajuda</div><div class="touch-controls"><button id="touchBoost">Soprar</button></div><div class="map-panel" hidden><button class="map-close">Fechar ×</button><h2>Seu caderno de viagem</h2><div class="map-layout"><div class="map-sheet"><canvas id="map" width="512" height="512" aria-label="Mapa de exploração com objetivos numerados"></canvas><button id="mapViewButton" class="map-view-toggle" aria-pressed="false">Ver mundo inteiro</button><p class="map-key">➤ você · 1 cachoeira · 2 ponte · 3 térmicas · ✓ concluída</p><div id="missionGuidance" class="mission-guidance"></div></div><div id="album"></div></div></div><div id="freeHelp" hidden><b>Voe sem pressa</b><p>↑ / W: baixar o nariz para ganhar velocidade.<br>↓ / S: levantar o nariz. ← → / A D: virar.<br>Espaço: sopro extra. Penas e folhas recarregam.<br>No chão, segure espaço, escolha a direção e solte.<br>No celular, arraste para guiar. Segure o botão para relançar.</p><p>A bússola indica o norte e a direção do avião. A seta da bandeira mostra para onde o ar vai; a legenda diz se ele leva você para frente, para trás ou para os lados. O vento horizontal desloca, mas é o ar subindo que ajuda a manter altura. No modo livre, o vento nunca empurra para baixo. Sem corrente de subida, o planador ainda perde altura naturalmente. No mapa, escolha uma aventura para destacar um destino.</p><p>Nuvens e aves circulando indicam térmicas. Procure as setas verdes, entre na corrente e faça círculos para continuar nela. O variômetro mede a subida do avião; o cartão mede a subida do ar. À tarde, as térmicas enfraquecem; à noite, procure as encostas que recebem vento. Pouse suavemente para descansar. As plataformas de madeira são catapultas!</p><button id="closeHelp">Vamos voar</button></div><div class="debug-free" hidden></div></div>`;
+  root.innerHTML = `<div class="free-ui"><div class="hud-stack"><div class="instruments"><strong id="alt">0</strong> <small>m de altitude</small><div class="meter-row"><span id="vario"></span><span id="boosts"></span></div></div>${navigationMarkup()}<div id="liftCue" class="lift-cue"><b id="liftTitle"></b><span id="liftHint"></span></div><div id="villageMission" class="day-period" hidden></div><div id="dayPeriod" class="day-period"></div></div><div class="top-actions"><button id="mapButton">Mapa · Tab</button><button id="helpButton">?</button><button id="menuButton">Menu</button></div><div class="toast" id="toast">Desenhando os arredores…</div><div class="charge" hidden><i></i></div><div class="hint">← → virar · ↑ ↓ inclinar · espaço: sopro · Tab: mapa · H: ajuda</div><div class="touch-controls"><button id="touchBoost">Soprar</button></div><div class="map-panel" hidden><button class="map-close">Fechar ×</button><h2>Seu caderno de viagem</h2><div class="map-layout"><div class="map-sheet"><canvas id="map" width="512" height="512" aria-label="Mapa de exploração com objetivos numerados"></canvas><button id="mapViewButton" class="map-view-toggle" aria-pressed="false">Ver mundo inteiro</button><p class="map-key">➤ você · 1 cachoeira · 2 ponte · 3 vila · ✓ concluída</p><div id="missionGuidance" class="mission-guidance"></div></div><div id="album"></div></div></div><div id="freeHelp" hidden><b>Voe sem pressa</b><p>↑ / W: baixar o nariz para ganhar velocidade.<br>↓ / S: levantar o nariz. ← → / A D: virar.<br>Espaço: sopro extra. Penas e folhas recarregam.<br>No chão, segure espaço, escolha a direção e solte.<br>No celular, arraste para guiar. Segure o botão para relançar.</p><p>A bússola indica o norte e a direção do avião. A seta da bandeira mostra para onde o ar vai; a legenda diz se ele leva você para frente, para trás ou para os lados. O vento horizontal desloca, mas é o ar subindo que ajuda a manter altura. No modo livre, o vento nunca empurra para baixo. Sem corrente de subida, o planador ainda perde altura naturalmente. No mapa, escolha uma aventura para destacar um destino.</p><p>Nuvens e aves circulando indicam térmicas. Procure as setas verdes, entre na corrente e faça círculos para continuar nela. O variômetro mede a subida do avião; o cartão mede a subida do ar. À tarde, as térmicas enfraquecem; à noite, procure as encostas que recebem vento. Pouse suavemente para descansar. As plataformas de madeira são catapultas!</p><button id="closeHelp">Vamos voar</button></div><div class="debug-free" hidden></div></div>`;
   const world = new WorldModel(seed),
     progress = new Progress(seed),
     view = new WorldView(world, settings),
@@ -103,12 +102,8 @@ export function startFree(seed, settings, exit) {
     if (choice)
       choice.innerHTML = missionListMarkup(currentMissions, selectedMission);
     const m = currentMissions.find((m) => m.id === selectedMission);
-    const thermalProgress =
-      m?.id === "termal" && !m.completed
-        ? `<span>Subida térmica acumulada: ${Math.min(THERMAL_GOAL, Math.floor(progress.thermalGain || 0))}/${THERMAL_GOAL} m</span>`
-        : "";
     $("#missionGuidance").innerHTML = m
-      ? `<b>${m.number}. ${m.name}</b><span>${targetLabel(m)}</span>${thermalProgress}<p>${m.hint}</p>${m.id === "ponte" && m.target ? '<button id="practiceBridge" type="button">Começar tentativa perto da ponte</button>' : ""}<small>${m.completed ? "Missão já concluída. Você pode visitar o local novamente." : "O traço pontilhado indica a direção em linha reta para um local sugerido, mesmo em áreas ainda não exploradas."}</small>`
+      ? `<b>${m.number}. ${m.name}</b><span>${targetLabel(m)}</span><p>${m.hint}</p>${m.id === "visita-vila" ? '<button id="practiceVillage" type="button">Começar perto da vila</button>' : ""}${m.id === "ponte" && m.target ? '<button id="practiceBridge" type="button">Começar tentativa perto da ponte</button>' : ""}<small>${m.completed ? "Missão já concluída. Você pode visitar o local novamente." : "O traço pontilhado indica a direção em linha reta para um local sugerido, mesmo em áreas ainda não exploradas."}</small>`
       : "";
   }
   $("#album").addEventListener("click", (e) => {
@@ -126,6 +121,21 @@ export function startFree(seed, settings, exit) {
     renderMissionMap();
   };
   $("#missionGuidance").addEventListener("click", (e) => {
+    if (e.target.closest("#practiceVillage")) {
+      const v = world.village;
+      const entry = { x: v.x, z: v.z - 110,
+        y: Math.max(world.heightAt(v.x, v.z - 110), v.y) + 35, yaw: Math.PI };
+      input.charge = false;
+      keys.clear();
+      flight.practiceBridge({ entry });
+      flight.flash = "Missão 3: siga em frente e entre no círculo azul da vila.";
+      view.camera.position.set(entry.x, entry.y + 8, entry.z - 19);
+      bridgePracticeMessage = flight.flash;
+      progress.resetTraversal();
+      toggleMap();
+      save();
+      return;
+    }
     if (!e.target.closest("#practiceBridge")) return;
     const bridge = currentMissions.find((m) => m.id === "ponte")?.target;
     if (!bridge) return;
@@ -359,6 +369,8 @@ export function startFree(seed, settings, exit) {
       }
       audio.update(flight.p, flight.vy, time);
     }
+    view.villageSelected = selectedMission === "visita-vila";
+    view.villageComplete = progress.challenges.has("visita-vila");
     view.bridgeComplete = progress.challenges.has("ponte");
     view.update(flight, time, w, dt);
     if (!paused) progress.observe(view, flight, w);
@@ -383,11 +395,11 @@ export function startFree(seed, settings, exit) {
       $("#liftCue").dataset.kind = advice.kind;
       $("#liftTitle").textContent = advice.title;
       $("#liftHint").textContent = advice.hint;
-      const thermalHUD = $("#thermalMission");
-      thermalHUD.hidden = selectedMission !== "termal";
-      thermalHUD.textContent = progress.challenges.has("termal")
+      const villageHUD = $("#villageMission");
+      villageHUD.hidden = selectedMission !== "visita-vila";
+      villageHUD.textContent = progress.challenges.has("visita-vila")
         ? "✓ Missão 3 concluída!"
-        : `Missão 3 · ${Math.floor(progress.thermalGain)}/${THERMAL_GOAL} m · siga as setas verdes`;
+        : `Missão 3 · vila a ${Math.round(Math.hypot(flight.p.x - world.village.x, flight.p.z - world.village.z))} m · entre no círculo azul`;
       const cycle = dayCycle(w.phase);
       $("#dayPeriod").textContent = `${cycle.period} · ${cycle.clock}`;
       $(".charge").hidden = flight.state !== "grounded";

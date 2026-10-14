@@ -1,5 +1,13 @@
 # Histórico
 
+## Nova missão 3 — 2026-10-14
+
+- Visite a Vila Dobradinha substitui a missão de subida térmica.
+- Destino fixo, círculo azul, distância no HUD e início opcional perto da vila.
+- Conclusão por chegada abaixo de 80 m do chão; pouso opcional e acidentes excluídos.
+- Conquistas antigas preservadas sem completar automaticamente a nova missão.
+
+
 ## Sopro suave e missão 3 — 2026-10-14
 
 - Impulso gradual e efeito de vento em rabisco, com duração curta.

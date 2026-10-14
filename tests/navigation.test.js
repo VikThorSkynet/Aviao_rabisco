@@ -56,13 +56,13 @@ test("mission directions lead to seeded, physically existing targets without cha
   );
   assert.ok(world.falls.some((f) => f.id === result[0].target.id));
   assert.equal(result[1].target.type, "bridge");
-  assert.equal(result[2].target.type, "thermal");
+  assert.equal(result[2].target, world.village);
   assert.equal(result[1].completed, true);
   assert.equal(result[0].completed, false);
   assert.deepEqual([...progress.challenges], ["ponte"]);
-  assert.match(targetLabel(result[2]), /durante o dia/);
+  assert.match(result[2].name, /Vila/);
   const fromEmpty = missionTargets(world, { loaded: new Map() }, p, progress);
-  assert.equal(fromEmpty[2].target.type, "thermal");
+  assert.equal(fromEmpty[2].target, world.village);
 });
 
 test("mission focus keeps player and goal inside the finite map, including edges", () => {

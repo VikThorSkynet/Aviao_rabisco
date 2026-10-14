@@ -55,7 +55,7 @@ Tab pausa e abre grade de 64 × 64 células. Áreas próximas do avião são exp
 
 Figurinhas incluem arco-íris, peixe, borboleta e bando. A observação usa aproximações de distância/visibilidade; não há um sistema de fotografia ou oclusão completo.
 
-Desafios opcionais: atravessar a queda, passar sob ponte-régua e acumular 30 m de subida nas térmicas. A missão 3 soma ganhos positivos em voo dentro de uma térmica, exclui o impulso dos sopros e conserva o avanço após pousos, recuperação e recarregamento. Escolha a missão no mapa para ver o contador no HUD. Siga uma seta verde e faça curvas suaves dentro da corrente.
+Desafios opcionais: atravessar a queda, passar sob ponte-régua e visitar a Vila Dobradinha. Na missão 3, entre na área de 90 m ao redor da vila, entre 0,5 e 80 m acima do chão, em voo ou pousado. Não precisa pousar; acidentes não contam. Escolha a missão no mapa para ver a distância no HUD e o círculo azul no cenário. O botão Começar perto da vila coloca o avião a 110 m do centro, já apontado para o destino.
 
 Recordes incluem altitude absoluta Y, duração de voo, distância horizontal sem pousar e IDs de térmicas visitados. Altura sobre o terreno aparece no diagnóstico, não no indicador principal.
 

@@ -40,7 +40,7 @@ A versão está no prefixo da chave; o JSON não possui `schemaVersion`. Este ex
 | collected | IDs dos coletáveis consumidos |
 | discovered | IDs dos marcos |
 | thermals | IDs únicos visitados |
-| challenges | cachoeira, ponte e/ou termal |
+| challenges | cachoeira, ponte, visita-vila e conquistas legadas como termal |
 | records.altitude | Maior Y absoluto, em metros |
 | records.airtime | Maior duração de voo, em segundos |
 | records.distance | Maior distância horizontal sem pousar, em metros |
@@ -98,4 +98,4 @@ Object.keys(localStorage).filter(key => key.startsWith('rabisco_'));
 
 Copie o valor da chave de uma seed para arquivo local como backup. Não versione saves pessoais. Para resetar, guarde o valor e remova apenas a chave desejada, sem limpar todo o armazenamento da origem.
 
-O campo opcional `thermalGain` guarda de 0 a 30 m de avanço da missão 3. Saves antigos sem o campo começam em zero; conquistas existentes com ID `termal` são preservadas. Pousar ou recuperar não apaga o avanço.
+A missão 3 agora usa `visita-vila`. Conquistas antigas `termal` permanecem no save, mas não concluem a visita. O campo antigo `thermalGain` é ignorado e deixa de ser gravado; térmicas continuam disponíveis para voar.

@@ -171,5 +171,18 @@
       "src/render/world.js",
       "tests/thermal-boost.test.js"
     ]
+  },
+  {
+    "id": "D015",
+    "date": "2026-10-14",
+    "status": "accepted",
+    "decision": "Substituir missão térmica por visita à Vila Dobradinha com novo ID visita-vila.",
+    "rationale": "Usuário pediu outra missão antes do envio. Objetivo espacial fixo e chegada ampla com início próximo; térmicas mantidas como mecânica de voo. Conquistas termal antigas não transferidas para objetivo diferente.",
+    "references": [
+      "src/ui/missions.js",
+      "src/ui/progress.js",
+      "tests/village-mission.test.js",
+      "docs/JOGABILIDADE.md"
+    ]
   }
 ]

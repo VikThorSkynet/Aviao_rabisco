@@ -182,6 +182,17 @@ export class WorldView {
     this.makeWater();
     this.bridgeGates = [];
     this.makeSpecials();
+    const villagePoints = [];
+    for (let i = 0; i <= 64; i++) {
+      const angle = i / 64 * Math.PI * 2;
+      villagePoints.push(new T.Vector3(world.village.x + Math.cos(angle) * 90,
+        world.village.y + 18, world.village.z + Math.sin(angle) * 90));
+    }
+    this.villageGate = new T.Line(new T.BufferGeometry().setFromPoints(villagePoints),
+      new T.LineBasicMaterial({ color: "#69afcc", transparent: true, opacity: 0.8 }));
+    this.villageGate.visible = false;
+    this.scene.add(this.villageGate);
+
     this.makeLife(settings);
     this.life = new Life(this.scene, world, settings);
     addEventListener("resize", () => {
@@ -627,6 +638,7 @@ export class WorldView {
   }
   update(f, time, weather, dt) {
     const p = f.p;
+    this.villageGate.visible = this.villageSelected && !this.villageComplete;
     for (const { bridge, ring } of this.bridgeGates) {
       ring.visible = Math.hypot(p.x - bridge.x, p.z - bridge.z) < 180;
       ring.material.resolution.set(innerWidth, innerHeight);
